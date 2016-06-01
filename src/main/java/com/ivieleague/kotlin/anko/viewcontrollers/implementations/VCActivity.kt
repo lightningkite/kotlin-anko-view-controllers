@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import com.ivieleague.kotlin.anko.animation.AnimationSet
+import com.ivieleague.kotlin.anko.async.AndroidAsync
 import com.ivieleague.kotlin.anko.runIfNewerThan
 import com.ivieleague.kotlin.anko.viewcontrollers.containers.VCContainer
 import com.ivieleague.kotlin.anko.viewcontrollers.containers.VCStack
@@ -55,6 +56,7 @@ abstract class VCActivity : Activity() {
     var savedInstanceState: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidAsync.init()
         super.onCreate(savedInstanceState)
         this.savedInstanceState = savedInstanceState
         vcView = VCView(this)
