@@ -58,15 +58,29 @@ object StandardDialog {
     fun cancelButton(resources: Resources): Pair<String, (VCStack) -> Unit> = resources.getString(R.string.cancel) to { it: VCStack -> it.pop() }
 }
 
+fun Activity.standardDialog(
+        title: Int?,
+        message: Int,
+        buttons: List<Pair<String, (VCStack) -> Unit>>,
+        dismissOnClickOutside: Boolean = true,
+        content: (ViewGroup.(VCStack) -> View)? = null
+) = standardDialog(
+        if (title != null) resources.getString(title) else null,
+        resources.getString(message),
+        buttons,
+        dismissOnClickOutside,
+        content
+)
+
 /**
  * Creates a psuedo-dialog that is actually an activity.  Significantly more stable and safe.
  */
 fun Activity.standardDialog(
         title: String?,
         message: String,
-        dismissOnClickOutside: Boolean = true,
         buttons: List<Pair<String, (VCStack) -> Unit>>,
-        content: ViewGroup.(VCStack) -> View
+        dismissOnClickOutside: Boolean = true,
+        content: (ViewGroup.(VCStack) -> View)? = null
 ) {
     return dialog(dismissOnClickOutside, layoutParamModifier = { width = matchParent }) { ui, vcStack ->
         ui.scrollView {
@@ -90,7 +104,7 @@ fun Activity.standardDialog(
                 }
 
                 //custom content
-                content(vcStack).lparams(matchParent, wrapContent) {
+                content?.invoke(this, vcStack)?.lparams(matchParent, wrapContent) {
                     standardMargins(context)
                 }
 
@@ -135,28 +149,34 @@ fun Activity.inputDialog(
         onResult: (String?) -> Unit
 ) {
     var et: EditText? = null
-    standardDialog(title, message, canCancel, listOf(
-            resources.getString(R.string.cancel)!! to { it: VCStack ->
-                onResult(null)
-                it.pop()
-            },
-            resources.getString(R.string.ok)!! to { it: VCStack ->
-                if (et != null) {
-                    val result = et!!.text.toString()
-                    val error = validation(result)
-                    if (error == null) {
-                        onResult(result)
+    standardDialog(
+            title,
+            message,
+            listOf(
+                    resources.getString(R.string.cancel)!! to { it: VCStack ->
+                        onResult(null)
                         it.pop()
-                    } else {
-                        snackbar(error)
+                    },
+                    resources.getString(R.string.ok)!! to { it: VCStack ->
+                        if (et != null) {
+                            val result = et!!.text.toString()
+                            val error = validation(result)
+                            if (error == null) {
+                                onResult(result)
+                                it.pop()
+                            } else {
+                                snackbar(error)
+                            }
+                        }
                     }
+            ),
+            canCancel,
+            {
+                et = editText() {
+                    this.inputType = inputType
+                    this.hint = hint
                 }
+                et!!
             }
-    ), {
-        et = editText() {
-            this.inputType = inputType
-            this.hint = hint
-        }
-        et!!
-    })
+    )
 }
