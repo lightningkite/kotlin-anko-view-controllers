@@ -44,15 +44,15 @@ dependencies {
     compile "com.github.lightningkite:kotlin-anko:publish-SNAPSHOT"
 }
 
-// build a jar with source files
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-artifacts {
-    archives sourcesJar
-}
+//// build a jar with source files
+//task sourcesJar(type: Jar) {
+//    from android.sourceSets.main.java.srcDirs
+//    classifier = 'sources'
+//}
+//
+//artifacts {
+//    archives sourcesJar
+//}
 
 buildscript {
     ext.kotlin_version = '1.0.2'
