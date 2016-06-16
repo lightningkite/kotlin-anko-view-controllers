@@ -1,9 +1,9 @@
-package com.ivieleague.kotlin.anko.viewcontrollers.implementations
+package com.lightningkite.kotlin.anko.viewcontrollers.implementations
 
 import android.content.res.Resources
 import android.view.View
-import com.ivieleague.kotlin.anko.viewcontrollers.ViewController
-import com.ivieleague.kotlin.anko.viewcontrollers.containers.VCContainer
+import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
+import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
 
 /**
  * Contains a given [VCContainer], embedding the container of views inside this view controller.

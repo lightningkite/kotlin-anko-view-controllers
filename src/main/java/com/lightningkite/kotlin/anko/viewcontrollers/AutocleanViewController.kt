@@ -1,11 +1,11 @@
-package com.ivieleague.kotlin.anko.viewcontrollers
+package com.lightningkite.kotlin.anko.viewcontrollers
 
 import android.view.View
 import android.view.ViewGroup
-import com.ivieleague.kotlin.Disposable
-import com.ivieleague.kotlin.anko.viewcontrollers.containers.VCContainer
-import com.ivieleague.kotlin.anko.viewcontrollers.implementations.VCActivity
-import com.ivieleague.kotlin.anko.viewcontrollers.implementations.VCView
+import com.lightningkite.kotlin.Disposable
+import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
+import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCActivity
+import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCView
 import java.util.*
 
 /**

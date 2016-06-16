@@ -1,7 +1,7 @@
-package com.ivieleague.kotlin.anko.viewcontrollers.containers
+package com.lightningkite.kotlin.anko.viewcontrollers.containers
 
-import com.ivieleague.kotlin.anko.animation.AnimationSet
-import com.ivieleague.kotlin.anko.viewcontrollers.ViewController
+import com.lightningkite.kotlin.anko.animation.AnimationSet
+import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 
 /**
  * The simplest [VCContainer] implementation.  Can swap the [ViewController] that is visible for

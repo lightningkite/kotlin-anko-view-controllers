@@ -1,9 +1,9 @@
-package com.ivieleague.kotlin.anko.viewcontrollers.containers
+package com.lightningkite.kotlin.anko.viewcontrollers.containers
 
 import android.content.res.Resources
-import com.ivieleague.kotlin.Disposable
-import com.ivieleague.kotlin.anko.animation.AnimationSet
-import com.ivieleague.kotlin.anko.viewcontrollers.ViewController
+import com.lightningkite.kotlin.Disposable
+import com.lightningkite.kotlin.anko.animation.AnimationSet
+import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import java.util.*
 
 /**

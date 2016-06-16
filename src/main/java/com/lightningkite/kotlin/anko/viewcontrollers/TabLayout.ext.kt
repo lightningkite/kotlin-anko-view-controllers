@@ -1,7 +1,7 @@
-package com.ivieleague.kotlin.anko.viewcontrollers
+package com.lightningkite.kotlin.anko.viewcontrollers
 
 import android.support.design.widget.TabLayout
-import com.ivieleague.kotlin.anko.viewcontrollers.containers.VCTabs
+import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCTabs
 
 /**
  * Created by jivie on 6/6/16.

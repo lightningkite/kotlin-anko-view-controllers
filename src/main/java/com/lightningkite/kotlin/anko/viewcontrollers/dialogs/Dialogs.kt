@@ -1,4 +1,4 @@
-package com.ivieleague.kotlin.anko.viewcontrollers.dialogs
+package com.lightningkite.kotlin.anko.viewcontrollers.dialogs
 
 import android.R
 import android.app.Activity
@@ -13,11 +13,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import com.ivieleague.kotlin.anko.selectableItemBackgroundBorderlessResource
-import com.ivieleague.kotlin.anko.snackbar
-import com.ivieleague.kotlin.anko.textColorResource
-import com.ivieleague.kotlin.anko.viewcontrollers.containers.VCStack
-import com.ivieleague.kotlin.anko.viewcontrollers.implementations.dialog
+import com.lightningkite.kotlin.anko.selectableItemBackgroundBorderlessResource
+import com.lightningkite.kotlin.anko.snackbar
+import com.lightningkite.kotlin.anko.textColorResource
+import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCStack
+import com.lightningkite.kotlin.anko.viewcontrollers.implementations.dialog
 import org.jetbrains.anko.*
 
 private inline fun ViewGroup.MarginLayoutParams.standardMargins(ctx: Context) {

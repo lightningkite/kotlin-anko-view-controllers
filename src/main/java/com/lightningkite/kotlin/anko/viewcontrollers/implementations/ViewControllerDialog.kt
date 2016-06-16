@@ -1,10 +1,10 @@
-package com.ivieleague.kotlin.anko.viewcontrollers.implementations
+package com.lightningkite.kotlin.anko.viewcontrollers.implementations
 
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.view.Window
-import com.ivieleague.kotlin.anko.viewcontrollers.ViewController
-import com.ivieleague.kotlin.anko.viewcontrollers.containers.VCStack
+import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
+import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCStack
 
 /**
  * Allows you to create a dialog using a view controller.

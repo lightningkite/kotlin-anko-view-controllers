@@ -1,9 +1,9 @@
-package com.ivieleague.kotlin.anko.viewcontrollers;
+package com.lightningkite.kotlin.anko.viewcontrollers;
 
 import android.content.res.Resources
 import android.view.View
-import com.ivieleague.kotlin.Disposable
-import com.ivieleague.kotlin.anko.viewcontrollers.implementations.VCActivity
+import com.lightningkite.kotlin.Disposable
+import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCActivity
 
 /**
  * An object that manages a view.

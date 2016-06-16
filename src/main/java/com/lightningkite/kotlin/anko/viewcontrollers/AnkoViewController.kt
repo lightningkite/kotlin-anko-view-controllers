@@ -1,7 +1,7 @@
-package com.ivieleague.kotlin.anko.viewcontrollers
+package com.lightningkite.kotlin.anko.viewcontrollers
 
 import android.view.View
-import com.ivieleague.kotlin.anko.viewcontrollers.implementations.VCActivity
+import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCActivity
 import org.jetbrains.anko.AnkoComponent
 import org.jetbrains.anko.AnkoContextImpl
 

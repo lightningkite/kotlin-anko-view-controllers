@@ -1,4 +1,4 @@
-package com.ivieleague.kotlin.anko.viewcontrollers.implementations
+package com.lightningkite.kotlin.anko.viewcontrollers.implementations
 
 import android.app.Activity
 import android.content.Intent
@@ -6,12 +6,12 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import com.ivieleague.kotlin.anko.animation.AnimationSet
-import com.ivieleague.kotlin.anko.async.AndroidAsync
-import com.ivieleague.kotlin.anko.runIfNewerThan
-import com.ivieleague.kotlin.anko.viewcontrollers.containers.VCContainer
-import com.ivieleague.kotlin.anko.viewcontrollers.containers.VCStack
-import com.ivieleague.kotlin.runAll
+import com.lightningkite.kotlin.anko.animation.AnimationSet
+import com.lightningkite.kotlin.anko.async.AndroidAsync
+import com.lightningkite.kotlin.anko.runIfNewerThan
+import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
+import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCStack
+import com.lightningkite.kotlin.runAll
 import java.util.*
 
 /**

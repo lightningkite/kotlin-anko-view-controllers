@@ -1,4 +1,4 @@
-package com.ivieleague.kotlin.anko.viewcontrollers.image
+package com.lightningkite.kotlin.anko.viewcontrollers.image
 
 import android.app.Activity
 import android.content.Intent
@@ -6,10 +6,10 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
-import com.ivieleague.kotlin.anko.files.getRealPath
-import com.ivieleague.kotlin.anko.files.toImageContentUri
-import com.ivieleague.kotlin.anko.image.getBitmapFromUri
-import com.ivieleague.kotlin.anko.viewcontrollers.implementations.VCActivity
+import com.lightningkite.kotlin.anko.files.getRealPath
+import com.lightningkite.kotlin.anko.files.toImageContentUri
+import com.lightningkite.kotlin.anko.image.getBitmapFromUri
+import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCActivity
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*

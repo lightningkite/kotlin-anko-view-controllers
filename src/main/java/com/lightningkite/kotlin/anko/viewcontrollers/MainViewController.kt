@@ -1,15 +1,15 @@
-package com.ivieleague.kotlin.anko.viewcontrollers
+package com.lightningkite.kotlin.anko.viewcontrollers
 
 import android.support.v7.widget.ActionMenuView
 import android.support.v7.widget.Toolbar
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import com.ivieleague.kotlin.anko.elevationCompat
-import com.ivieleague.kotlin.anko.viewcontrollers.containers.VCContainer
-import com.ivieleague.kotlin.anko.viewcontrollers.containers.VCStack
-import com.ivieleague.kotlin.anko.viewcontrollers.implementations.VCActivity
-import com.ivieleague.kotlin.lifecycle.bind
+import com.lightningkite.kotlin.anko.elevationCompat
+import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
+import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCStack
+import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCActivity
+import com.lightningkite.kotlin.lifecycle.bind
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.actionMenuView
 import org.jetbrains.anko.appcompat.v7.toolbar
