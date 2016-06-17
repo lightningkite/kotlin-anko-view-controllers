@@ -58,6 +58,14 @@ object StandardDialog {
     fun cancelButton(resources: Resources): Pair<String, (VCStack) -> Unit> = resources.getString(R.string.cancel) to { it: VCStack -> it.pop() }
 }
 
+fun Activity.alertDialog(message: Int) = standardDialog(
+        null,
+        resources.getString(message),
+        listOf(StandardDialog.okButton(resources) {}),
+        true,
+        null
+)
+
 fun Activity.standardDialog(
         title: Int?,
         message: Int,
