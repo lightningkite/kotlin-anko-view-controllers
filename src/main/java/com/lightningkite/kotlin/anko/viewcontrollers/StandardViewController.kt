@@ -141,6 +141,9 @@ abstract class StandardViewController() : ViewController {
         val view = controller.make(context as VCActivity)
         addView(view)
         view.init()
+        onUnmake.add {
+            controller.unmake(view)
+        }
         return view
     }
 
