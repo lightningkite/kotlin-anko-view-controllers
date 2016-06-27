@@ -9,22 +9,25 @@ import java.util.*
  * Created by jivie on 10/12/15.
  */
 open class VCStack() : VCContainerImpl() {
-    override val current: ViewController get() = stack.peek()
+    override val current: ViewController get() = internalStack.peek()
 
     var defaultPushAnimation = AnimationSet.slidePush
     var defaultPopAnimation = AnimationSet.slidePop
     var defaultSwapAnimation = AnimationSet.fade
 
-    val size: Int get() = stack.size
-    val isEmpty: Boolean get() = stack.isEmpty()
+    val size: Int get() = internalStack.size
+    val isEmpty: Boolean get() = internalStack.isEmpty()
     var onEmptyListener: () -> Unit = {}
 
 
-    private var stack: Stack<ViewController> = Stack()
+    var stack: Stack<ViewController>
+        get() = internalStack
+        set(value) = setStack(value)
+    private var internalStack: Stack<ViewController> = Stack()
 
     fun setStack(newStack: Stack<ViewController>, animationSet: AnimationSet? = defaultPushAnimation): Unit {
-        val toDispose = stack.filter { !newStack.contains(it) }
-        stack = newStack
+        val toDispose = internalStack.filter { !newStack.contains(it) }
+        internalStack = newStack
         swapListener?.invoke(current, animationSet) {
             toDispose.forEach {
                 it.dispose()
@@ -35,16 +38,16 @@ open class VCStack() : VCContainerImpl() {
 
 
     fun push(viewController: ViewController, animationSet: AnimationSet? = defaultPushAnimation) {
-        stack.push(viewController)
+        internalStack.push(viewController)
         swapListener?.invoke(current, animationSet) {}
         onSwap.forEach { it(current) }
     }
 
     fun pop(animationSet: AnimationSet? = defaultPopAnimation) {
-        if (stack.size <= 1) {
+        if (internalStack.size <= 1) {
             onEmptyListener()
         } else {
-            val toDispose = stack.pop()
+            val toDispose = internalStack.pop()
             swapListener?.invoke(current, animationSet) {
                 toDispose.dispose()
             }
@@ -53,7 +56,7 @@ open class VCStack() : VCContainerImpl() {
     }
 
     fun root(animationSet: AnimationSet? = defaultPopAnimation) {
-        val toDispose = ArrayList<ViewController>(stack)
+        val toDispose = ArrayList<ViewController>(internalStack)
         toDispose.removeAt(0)
         swapListener?.invoke(current, animationSet) {
             toDispose.forEach {
@@ -65,9 +68,9 @@ open class VCStack() : VCContainerImpl() {
 
     fun back(predicate: (ViewController) -> Boolean, animationSet: AnimationSet? = defaultPopAnimation) {
         val toDispose = ArrayList<ViewController>()
-        while (!predicate(stack.peek())) {
-            toDispose.add(stack.pop())
-            if (stack.size == 0) throw IllegalArgumentException("There is no view controller that matches this predicate!")
+        while (!predicate(internalStack.peek())) {
+            toDispose.add(internalStack.pop())
+            if (internalStack.size == 0) throw IllegalArgumentException("There is no view controller that matches this predicate!")
         }
         swapListener?.invoke(current, animationSet) {
             toDispose.forEach {
@@ -78,8 +81,8 @@ open class VCStack() : VCContainerImpl() {
     }
 
     fun swap(viewController: ViewController, animationSet: AnimationSet? = defaultSwapAnimation) {
-        val toDispose = stack.pop()
-        stack.push(viewController)
+        val toDispose = internalStack.pop()
+        internalStack.push(viewController)
         swapListener?.invoke(current, animationSet) {
             toDispose.dispose()
         }
@@ -87,9 +90,9 @@ open class VCStack() : VCContainerImpl() {
     }
 
     fun reset(viewController: ViewController, animationSet: AnimationSet? = defaultSwapAnimation) {
-        val toDispose = ArrayList(stack)
-        stack.clear()
-        stack.push(viewController)
+        val toDispose = ArrayList(internalStack)
+        internalStack.clear()
+        internalStack.push(viewController)
         swapListener?.invoke(current, animationSet) {
             toDispose.forEach { it.dispose() }
         }
@@ -97,9 +100,9 @@ open class VCStack() : VCContainerImpl() {
     }
 
     override fun onBackPressed(backAction: () -> Unit) {
-        if (stack.size == 0) {
+        if (internalStack.size == 0) {
             backAction()
-        } else if (stack.size == 1) {
+        } else if (internalStack.size == 1) {
             current.onBackPressed {
                 backAction()
             }
@@ -111,7 +114,7 @@ open class VCStack() : VCContainerImpl() {
     }
 
     override fun dispose() {
-        for (vc in stack) {
+        for (vc in internalStack) {
             vc.dispose()
         }
     }
