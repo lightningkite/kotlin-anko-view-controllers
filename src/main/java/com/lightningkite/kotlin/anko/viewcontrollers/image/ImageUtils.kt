@@ -6,7 +6,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
-import com.lightningkite.kotlin.anko.files.getRealPath
+import android.support.v4.content.FileProvider
 import com.lightningkite.kotlin.anko.image.getBitmapFromUri
 import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCActivity
 import java.io.File
@@ -39,11 +39,44 @@ fun VCActivity.getImageUriFromGallery(onResult: (Uri?) -> Unit) {
         onResult(imageUri)
     }
 }
+//
+///**
+// * Opens the camera to take a picture, returning it in [onResult].
+// */
+//fun VCActivity.getImageUriFromCamera(onResult: (Uri?) -> Unit) {
+//    try {
+//        val folder = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+//                ?: Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+//                ?: Environment.getDownloadCacheDirectory()
+//        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//
+//        folder.mkdir()
+//
+//        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+//        val file = File.createTempFile(timeStamp, ".jpg", folder)
+//        val potentialFile: Uri = Uri.fromFile(file)
+//
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, potentialFile)
+//        this.startIntent(intent) { code, data ->
+//            if (code != Activity.RESULT_OK) {
+//                onResult(null); return@startIntent
+//            }
+//            println("Actual data:" + data?.data?.toString())
+//            //val fixedUri = Uri.fromFile(File((data?.data ?: potentialFile).getRealPath(this)))
+//            val fixedUri = File((data?.data ?: potentialFile).getRealPath(this)).toImageContentUri(this)
+//
+//            onResult(fixedUri)
+//        }
+//    } catch(e: Exception) {
+//        e.printStackTrace()
+//        onResult(null)
+//    }
+//}
 
 /**
  * Opens the camera to take a picture, returning it in [onResult].
  */
-fun VCActivity.getImageUriFromCamera(onResult: (Uri?) -> Unit) {
+fun VCActivity.getImageUriFromCamera(fileProviderAuthority: String, onResult: (Uri?) -> Unit) {
     try {
         val folder = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                 ?: Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
@@ -54,17 +87,18 @@ fun VCActivity.getImageUriFromCamera(onResult: (Uri?) -> Unit) {
 
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val file = File.createTempFile(timeStamp, ".jpg", folder)
-        val potentialFile: Uri = Uri.fromFile(file)
+        val potentialFile: Uri = FileProvider.getUriForFile(this, "com.summertechnologies.pasturemap.fileprovider", file)
 
         intent.putExtra(MediaStore.EXTRA_OUTPUT, potentialFile)
         this.startIntent(intent) { code, data ->
             if (code != Activity.RESULT_OK) {
                 onResult(null); return@startIntent
             }
-            val fixedUri = Uri.fromFile(File((data?.data ?: potentialFile).getRealPath(this)))
-            //val fixedUri = File((data?.data ?: potentialFile).getRealPath(this)).toImageContentUri(this)
+            println("Actual data:" + data?.data?.toString())
+            //val fixedUri = Uri.fromFile(File((data?.data ?: potentialFile).getRealPath(this)))
+//            val fixedUri = File((data?.data ?: potentialFile).getRealPath(this)).toImageContentUri(this)
 
-            onResult(fixedUri)
+            onResult(data?.data ?: potentialFile)
         }
     } catch(e: Exception) {
         e.printStackTrace()
