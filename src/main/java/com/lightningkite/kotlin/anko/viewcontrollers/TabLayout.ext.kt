@@ -1,6 +1,7 @@
 package com.lightningkite.kotlin.anko.viewcontrollers
 
 import android.support.design.widget.TabLayout
+import android.view.View
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCTabs
 
 /**
@@ -25,6 +26,29 @@ inline fun TabLayout.setUpWithVCTabs(vcTabs: VCTabs, crossinline onReselect: (In
         index++
     }
 
+    var iSetIndex = false
+
+    addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+
+        val listener: (Int) -> Unit = {
+            if (iSetIndex) {
+                iSetIndex = false
+            } else if (it == selectedTabPosition) {
+
+            } else {
+                getTabAt(it)?.select()
+            }
+        }
+
+        override fun onViewAttachedToWindow(v: View?) {
+            vcTabs.onIndexChange.add(listener)
+        }
+
+        override fun onViewDetachedFromWindow(v: View?) {
+            vcTabs.onIndexChange.remove(listener)
+        }
+    })
+
     setOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
         override fun onTabReselected(tab: TabLayout.Tab) {
             onReselect(tab.position - offset)
@@ -35,6 +59,7 @@ inline fun TabLayout.setUpWithVCTabs(vcTabs: VCTabs, crossinline onReselect: (In
 
         override fun onTabSelected(tab: TabLayout.Tab) {
             onSelectBeforeChange(tab.position - offset)
+            iSetIndex = true
             vcTabs.index = tab.position - offset
         }
 
