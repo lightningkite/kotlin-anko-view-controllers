@@ -137,10 +137,13 @@ abstract class StandardViewController() : ViewController {
         return vcview
     }
 
-    inline fun ViewGroup.viewController(controller: ViewController, init: View.() -> Unit): View {
+    fun ViewGroup.viewController(controller: ViewController, init: View.() -> Unit): View {
         val view = controller.make(context as VCActivity)
         addView(view)
         view.init()
+        onUnmake.add {
+            controller.unmake(view)
+        }
         return view
     }
 
