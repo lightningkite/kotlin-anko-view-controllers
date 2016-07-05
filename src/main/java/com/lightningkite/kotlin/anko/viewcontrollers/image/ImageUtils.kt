@@ -79,15 +79,13 @@ fun VCActivity.getImageUriFromGallery(onResult: (Uri?) -> Unit) {
 fun VCActivity.getImageUriFromCamera(fileProviderAuthority: String, onResult: (Uri?) -> Unit) {
     try {
         val folder = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                ?: Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                ?: Environment.getDownloadCacheDirectory()
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
         folder.mkdir()
 
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val file = File.createTempFile(timeStamp, ".jpg", folder)
-        val potentialFile: Uri = FileProvider.getUriForFile(this, "com.summertechnologies.pasturemap.fileprovider", file)
+        val potentialFile: Uri = FileProvider.getUriForFile(this, fileProviderAuthority, file)
 
         intent.putExtra(MediaStore.EXTRA_OUTPUT, potentialFile)
         this.startIntent(intent) { code, data ->
