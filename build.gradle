@@ -42,6 +42,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile "com.github.lightningkite:kotlin-anko:publish-SNAPSHOT"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
 //// build a jar with source files
@@ -55,6 +56,7 @@ dependencies {
 //}
 
 buildscript {
+    ext.kotlin_version = '1.0.3'
     ext.kotlin_version = '1.0.2'
     repositories {
         mavenCentral()
