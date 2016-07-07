@@ -42,9 +42,11 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile project(':kotlin-anko')
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
 buildscript {
+    ext.kotlin_version = '1.0.3'
     ext.kotlin_version = '1.0.2'
     repositories {
         mavenCentral()
