@@ -57,7 +57,11 @@ open class VCStack() : VCContainerImpl() {
 
     fun root(animationSet: AnimationSet? = defaultPopAnimation) {
         val toDispose = ArrayList<ViewController>(internalStack)
-        toDispose.removeAt(0)
+        val root = toDispose.removeAt(0)
+        while (stack.isNotEmpty()) {
+            stack.pop()
+        }
+        stack.push(root)
         swapListener?.invoke(current, animationSet) {
             toDispose.forEach {
                 it.dispose()
