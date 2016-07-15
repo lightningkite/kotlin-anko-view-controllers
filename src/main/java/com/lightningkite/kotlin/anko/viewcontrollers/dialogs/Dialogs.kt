@@ -55,6 +55,9 @@ object StandardDialog {
     fun okButton(resources: Resources, action: () -> Unit = {}): Pair<String, (VCStack) -> Unit> =
             resources.getString(R.string.ok) to { it: VCStack -> action(); it.pop() }
 
+    fun cancelButton(resources: Resources, action: () -> Unit = {}): Pair<String, (VCStack) -> Unit> =
+            resources.getString(R.string.cancel) to { it: VCStack -> action(); it.pop() }
+
     fun cancelButton(resources: Resources): Pair<String, (VCStack) -> Unit> = resources.getString(R.string.cancel) to { it: VCStack -> it.pop() }
 }
 
@@ -133,6 +136,10 @@ fun Activity.standardDialog(
             }
         }
     }
+}
+
+fun Activity.confirmationDialog(title: Int, message: Int, onCancel: () -> Unit = {}, onConfirm: () -> Unit) {
+    return standardDialog(title, message, listOf(StandardDialog.okButton(resources, onConfirm), StandardDialog.cancelButton(resources, onCancel)))
 }
 
 

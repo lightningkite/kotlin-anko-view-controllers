@@ -1,5 +1,6 @@
 package com.lightningkite.kotlin.anko.viewcontrollers.image
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
@@ -7,15 +8,55 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
+import android.util.Log
 import com.lightningkite.kotlin.anko.image.getBitmapFromUri
+import com.lightningkite.kotlin.anko.selector
 import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCActivity
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * Created by jivie on 6/2/16.
- */
+fun VCActivity.dialogImageUri(fileProviderAuthority: String, cameraRes: Int, galleryRes: Int, onResult: (Uri?) -> Unit) {
+    selector(
+            null,
+            cameraRes to {
+                requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    getImageUriFromCamera(fileProviderAuthority = fileProviderAuthority) {
+                        Log.i("ImageUploadLayout", it.toString())
+                        onResult(it)
+                    }
+                }
+            },
+            galleryRes to {
+                requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE) {
+                    getImageUriFromGallery() {
+                        Log.i("ImageUploadLayout", it.toString())
+                        onResult(it)
+                    }
+                }
+            }
+    )
+}
+
+fun VCActivity.dialogImage(minBytes: Long, cameraRes: Int, galleryRes: Int, onResult: (Bitmap?) -> Unit) {
+    selector(
+            null,
+            cameraRes to {
+                requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    getImageFromCamera(minBytes) {
+                        onResult(it)
+                    }
+                }
+            },
+            galleryRes to {
+                requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE) {
+                    getImageFromGallery(minBytes) {
+                        onResult(it)
+                    }
+                }
+            }
+    )
+}
 
 /**
  * Pops up a dialog for getting an image from the gallery, returning it in [onResult].
