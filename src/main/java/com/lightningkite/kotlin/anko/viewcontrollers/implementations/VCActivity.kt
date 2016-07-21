@@ -1,12 +1,12 @@
 package com.lightningkite.kotlin.anko.viewcontrollers.implementations
 
 import android.annotation.TargetApi
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
 import com.lightningkite.kotlin.anko.animation.AnimationSet
 import com.lightningkite.kotlin.anko.async.AndroidAsync
 import com.lightningkite.kotlin.anko.runIfNewerThan
@@ -21,7 +21,7 @@ import java.util.*
  * [VCContainer], and use the back button on the [VCContainer].
  * Created by jivie on 10/12/15.
  */
-abstract class VCActivity : AppCompatActivity() {
+abstract class VCActivity : Activity() {
 
     companion object {
         val returns: HashMap<Int, (Int, Intent?) -> Unit> = HashMap()
