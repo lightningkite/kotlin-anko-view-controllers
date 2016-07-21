@@ -148,7 +148,7 @@ fun VCActivity.getImageUriFromCamera(fileProviderAuthority: String, onResult: (U
 /**
  * Pops up a dialog for getting an image from the gallery, returning it in [onResult].
  */
-fun VCActivity.getImageFromGallery(minBytes: Int, onResult: (Bitmap?) -> Unit) {
+fun VCActivity.getImageFromGallery(minBytes: Long, onResult: (Bitmap?) -> Unit) {
     val getIntent = Intent(Intent.ACTION_GET_CONTENT)
     getIntent.type = "image/*"
 
@@ -171,7 +171,7 @@ fun VCActivity.getImageFromGallery(minBytes: Int, onResult: (Bitmap?) -> Unit) {
 /**
  * Opens the camera to take a picture, returning it in [onResult].
  */
-fun VCActivity.getImageFromCamera(minBytes: Int, onResult: (Bitmap?) -> Unit) {
+fun VCActivity.getImageFromCamera(minBytes: Long, onResult: (Bitmap?) -> Unit) {
     val folder = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
     val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
     if (folder == null) {
