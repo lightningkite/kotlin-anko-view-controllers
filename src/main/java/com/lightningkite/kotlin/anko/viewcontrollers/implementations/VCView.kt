@@ -20,7 +20,7 @@ open class VCView(val activity: VCActivity) : FrameLayout(activity) {
 
     var wholeViewAnimatingIn: Boolean = false
     var killViewAnimateOutCalled: Boolean = false
-    var gravity: Int = Gravity.TOP or Gravity.CENTER_HORIZONTAL
+    var defaultLayoutParams = FrameLayout.LayoutParams(matchParent, matchParent, Gravity.CENTER)
 
     var container: VCContainer? = null
     fun attach(newContainer: VCContainer) {
@@ -55,7 +55,7 @@ open class VCView(val activity: VCActivity) : FrameLayout(activity) {
         val animation = preferredAnimation ?: defaultAnimation
         current = vc
         currentView = vc.make(activity).apply {
-            layoutParams = FrameLayout.LayoutParams(matchParent, matchParent, gravity)
+            layoutParams = FrameLayout.LayoutParams(defaultLayoutParams)
             if (this !is AbsListView) {
                 onClick { }
             }

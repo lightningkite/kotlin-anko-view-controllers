@@ -121,6 +121,7 @@ abstract class StandardViewController() : ViewController {
 
     inline fun ViewGroup.viewContainer(container: VCContainer, init: VCView.() -> Unit): VCView {
         val vcview = VCView(context as VCActivity)
+        vcview.init()
         vcview.wholeViewAnimatingIn = true
         vcview.attach(container)
         onAnimateInComplete.add { activity, view ->
@@ -133,7 +134,6 @@ abstract class StandardViewController() : ViewController {
             vcview.detatch()
         }
         addView(vcview)
-        vcview.init()
         return vcview
     }
 
