@@ -55,7 +55,7 @@ open class VCView(val activity: VCActivity) : FrameLayout(activity) {
         val animation = preferredAnimation ?: defaultAnimation
         current = vc
         currentView = vc.make(activity).apply {
-            layoutParams = FrameLayout.LayoutParams(defaultLayoutParams)
+            layoutParams = FrameLayout.LayoutParams(defaultLayoutParams.width, defaultLayoutParams.height, defaultLayoutParams.gravity)
             if (this !is AbsListView) {
                 onClick { }
             }
