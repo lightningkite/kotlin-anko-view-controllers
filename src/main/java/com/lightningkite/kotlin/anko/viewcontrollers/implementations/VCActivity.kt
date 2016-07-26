@@ -10,8 +10,10 @@ import android.support.v4.content.ContextCompat
 import com.lightningkite.kotlin.anko.animation.AnimationSet
 import com.lightningkite.kotlin.anko.async.AndroidAsync
 import com.lightningkite.kotlin.anko.runIfNewerThan
+import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCStack
+import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCSwapper
 import com.lightningkite.kotlin.runAll
 import java.util.*
 
@@ -42,6 +44,11 @@ abstract class VCActivity : Activity() {
     }
 
     open val defaultAnimation: AnimationSet? = AnimationSet.fade
+
+    fun attach(newController: ViewController) {
+        val newContainer = VCSwapper(newController)
+        vcView.attach(newContainer)
+    }
 
     fun attach(newContainer: VCContainer) {
         vcView.attach(newContainer)
