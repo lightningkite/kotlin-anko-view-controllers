@@ -153,7 +153,7 @@ abstract class StandardViewController() : ViewController {
         onMake.add {
             menuItem = add(textRes).apply {
                 setIcon(iconRes)
-                setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
             }.apply(setup)
         }
         onAnimateOutStart.add { a, v ->
@@ -166,7 +166,7 @@ abstract class StandardViewController() : ViewController {
         onMake.add {
             menuItem = add(groupId, id, order, textRes).apply {
                 setIcon(iconRes)
-                setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
             }.apply(setup)
         }
         onAnimateOutStart.add { a, v ->
