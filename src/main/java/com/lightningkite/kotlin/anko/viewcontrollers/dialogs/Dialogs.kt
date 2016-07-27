@@ -142,6 +142,14 @@ fun Activity.confirmationDialog(title: Int, message: Int, onCancel: () -> Unit =
     return standardDialog(title, message, listOf(StandardDialog.okButton(resources, onConfirm), StandardDialog.cancelButton(resources, onCancel)))
 }
 
+fun Activity.infoDialog(title: Int?, message: Int, onConfirm: () -> Unit) {
+    return standardDialog(title, message, listOf(StandardDialog.okButton(resources, onConfirm)))
+}
+
+fun Activity.infoDialog(title: String?, message: String, onConfirm: () -> Unit) {
+    return standardDialog(title, message, listOf(StandardDialog.okButton(resources, onConfirm)))
+}
+
 
 /**
  * Creates a dialog with an input text field on it.
