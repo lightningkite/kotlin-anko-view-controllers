@@ -49,25 +49,26 @@ open class VCView(val activity: VCActivity) : FrameLayout(activity) {
 
     var current: ViewController? = null
     var currentView: View? = null
-    val swap = fun(vc: ViewController, preferredAnimation: AnimationSet?, onFinish: () -> Unit) {
+    val swap = fun(new: ViewController, preferredAnimation: AnimationSet?, onFinish: () -> Unit) {
         val oldView = currentView
         val old = current
         val animation = preferredAnimation ?: defaultAnimation
-        current = vc
-        currentView = vc.make(activity).apply {
+        current = new
+        val newView = new.make(activity).apply {
             layoutParams = FrameLayout.LayoutParams(defaultLayoutParams.width, defaultLayoutParams.height, defaultLayoutParams.gravity)
             if (this !is AbsListView) {
                 onClick { }
             }
         }
-        this.addView(currentView)
+        this.addView(newView)
+        currentView = newView
         if (old != null && oldView != null) {
             if (animation == null) {
                 old.animateOutStart(activity, oldView)
                 old.unmake(oldView)
                 removeView(oldView)
                 onFinish()
-                current?.animateInComplete(activity, currentView!!)
+                new.animateInComplete(activity, newView)
             } else {
                 val animateOut = animation.animateOut
                 old.animateOutStart(activity, oldView)
@@ -77,13 +78,13 @@ open class VCView(val activity: VCActivity) : FrameLayout(activity) {
                     onFinish()
                 }.start()
                 val animateIn = animation.animateIn
-                currentView!!.animateIn(this).withEndAction {
-                    current?.animateInComplete(activity, currentView!!)
+                newView.animateIn(this).withEndAction {
+                    new.animateInComplete(activity, newView)
                 }.start()
             }
         } else {
             if (!wholeViewAnimatingIn) {
-                current?.animateInComplete(activity, currentView!!)
+                new.animateInComplete(activity, newView)
             }
         }
         killViewAnimateOutCalled = false

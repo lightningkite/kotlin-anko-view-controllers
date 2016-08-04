@@ -12,29 +12,30 @@ import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
  */
 open class ContainerVC(val container: VCContainer, val disposeContainer: Boolean = true) : ViewController {
 
-    var vcView: VCView? = null
-
     override fun make(activity: VCActivity): View {
-        vcView = VCView(activity).apply {
+        val vcView = VCView(activity).apply {
             wholeViewAnimatingIn = true
         }
-        vcView!!.attach(container)
-        return vcView!!
+        vcView.attach(container)
+        return vcView
     }
 
     override fun unmake(view: View) {
-        vcView?.detatch()
-        vcView?.unmake()
+        if (view !is VCView) throw IllegalStateException()
+        view.detatch()
+        view.unmake()
         super.unmake(view)
     }
 
     override fun animateInComplete(activity: VCActivity, view: View) {
-        vcView?.animateInComplete(activity, view)
+        if (view !is VCView) throw IllegalStateException()
+        view.animateInComplete(activity, view)
         super.animateInComplete(activity, view)
     }
 
     override fun animateOutStart(activity: VCActivity, view: View) {
-        vcView?.animateOutStart(activity, view)
+        if (view !is VCView) throw IllegalStateException()
+        view.animateOutStart(activity, view)
         super.animateOutStart(activity, view)
     }
 
@@ -46,7 +47,7 @@ open class ContainerVC(val container: VCContainer, val disposeContainer: Boolean
     }
 
     override fun onBackPressed(backAction: () -> Unit) {
-        vcView?.container?.onBackPressed(backAction)
+        container.onBackPressed(backAction)
     }
 
     override fun getTitle(resources: Resources): String {
