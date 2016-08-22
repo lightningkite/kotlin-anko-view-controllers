@@ -97,9 +97,9 @@ abstract class StandardViewController() : ViewController {
         super.animateOutStart(activity, view)
     }
 
-    fun <T : Disposable> autoDispose(vc: T): T {
-        onDispose.add { vc.dispose() }
-        return vc
+    fun <T : Disposable> autoDispose(disposable: T): T {
+        onDispose.add { disposable.dispose() }
+        return disposable
     }
 
     inline fun ViewGroup.viewContainer(container: VCContainer): VCView {
