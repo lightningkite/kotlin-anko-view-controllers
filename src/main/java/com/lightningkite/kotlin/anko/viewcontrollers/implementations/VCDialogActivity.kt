@@ -72,6 +72,13 @@ inline fun Activity.dialog(
 ) {
     viewControllerDialog(VCStack().apply {
         push(object : AnkoViewController() {
+
+            override fun onBackPressed(backAction: () -> Unit) {
+                if(dismissOnTouchOutside) {
+                    backAction()
+                }
+            }
+
             override fun createView(ui: AnkoContext<VCActivity>): View {
                 return viewMaker(ui, this@apply)
             }
@@ -87,6 +94,12 @@ inline fun Activity.dialog(
 ) {
     viewControllerDialog(VCStack().apply {
         push(object : AnkoViewController() {
+            override fun onBackPressed(backAction: () -> Unit) {
+                if(dismissOnTouchOutside) {
+                    backAction()
+                }
+            }
+
             override fun createView(ui: AnkoContext<VCActivity>): View {
                 return viewMaker(ui, this@apply)
             }
