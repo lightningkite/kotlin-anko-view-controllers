@@ -18,6 +18,7 @@ import org.jetbrains.anko.design.coordinatorLayout
 /**
  * Created by jivie on 3/15/16.
  */
+@Deprecated("Just do it manually.  It's better.")
 abstract class MainViewController(val backResource: Int, val styleToolbar: Toolbar.() -> Unit) : AnkoViewController() {
 
     var menuResource: Int = 0
