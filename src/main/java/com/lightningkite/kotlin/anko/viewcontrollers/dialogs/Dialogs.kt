@@ -52,11 +52,11 @@ private inline fun Button.styleDestructive() {
 }
 
 object StandardDialog {
-    fun okButton(resources: Resources, action: () -> Unit = {}): Pair<String, (VCStack) -> Unit> =
-            resources.getString(R.string.ok) to { it: VCStack -> action(); it.pop() }
+    fun okButton(resources: Resources, okResource: Int = R.string.ok, action: () -> Unit = {}): Pair<String, (VCStack) -> Unit> =
+            resources.getString(okResource) to { it: VCStack -> action(); it.pop() }
 
-    fun cancelButton(resources: Resources, action: () -> Unit = {}): Pair<String, (VCStack) -> Unit> =
-            resources.getString(R.string.cancel) to { it: VCStack -> action(); it.pop() }
+    fun cancelButton(resources: Resources, cancelResource: Int = R.string.cancel, action: () -> Unit = {}): Pair<String, (VCStack) -> Unit> =
+            resources.getString(cancelResource) to { it: VCStack -> action(); it.pop() }
 
     fun cancelButton(resources: Resources): Pair<String, (VCStack) -> Unit> = resources.getString(R.string.cancel) to { it: VCStack -> it.pop() }
 }
@@ -139,19 +139,35 @@ fun Activity.standardDialog(
 }
 
 fun Activity.confirmationDialog(title: Int? = null, message: Int, onCancel: () -> Unit = {}, onConfirm: () -> Unit) {
-    return standardDialog(title, message, listOf(StandardDialog.okButton(resources, onConfirm), StandardDialog.cancelButton(resources, onCancel)))
+    return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm), StandardDialog.cancelButton(resources, action = onCancel)))
 }
 
 fun Activity.confirmationDialog(title: String? = null, message: String, onCancel: () -> Unit = {}, onConfirm: () -> Unit) {
-    return standardDialog(title, message, listOf(StandardDialog.okButton(resources, onConfirm), StandardDialog.cancelButton(resources, onCancel)))
+    return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm), StandardDialog.cancelButton(resources, action = onCancel)))
+}
+
+fun Activity.confirmationDialog(title: String? = null, message: String, okResource: Int = R.string.ok, cancelResource: Int = R.string.cancel, dismissOnClickOutside: Boolean = true, onPositiveAction: () -> Unit, onNegativeAction: () -> Unit) {
+    return standardDialog(
+            title,
+            message,
+            listOf(StandardDialog.okButton(resources, okResource, onPositiveAction), StandardDialog.cancelButton(resources, cancelResource, onNegativeAction)),
+            dismissOnClickOutside = dismissOnClickOutside)
+}
+
+fun Activity.confirmationDialog(title: Int? = null, message: Int, okResource: Int = R.string.ok, cancelResource: Int = R.string.cancel, dismissOnClickOutside: Boolean = true, onPositiveAction: () -> Unit, onNegativeAction: () -> Unit) {
+    return standardDialog(
+            title,
+            message,
+            listOf(StandardDialog.okButton(resources, okResource, onPositiveAction), StandardDialog.cancelButton(resources, cancelResource, onNegativeAction)),
+            dismissOnClickOutside = dismissOnClickOutside)
 }
 
 fun Activity.infoDialog(title: Int? = null, message: Int, onConfirm: () -> Unit = {}) {
-    return standardDialog(title, message, listOf(StandardDialog.okButton(resources, onConfirm)))
+    return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm)))
 }
 
 fun Activity.infoDialog(title: String? = null, message: String, onConfirm: () -> Unit = {}) {
-    return standardDialog(title, message, listOf(StandardDialog.okButton(resources, onConfirm)))
+    return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm)))
 }
 
 
