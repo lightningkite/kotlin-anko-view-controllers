@@ -11,6 +11,16 @@ import java.util.*
 open class VCStack() : VCContainerImpl() {
     override val current: ViewController get() = internalStack.peek()
 
+    /**
+     * Gets the view controller that is [index] pops back.
+     * 0 = the current view controller
+     * 1 = the next view controller if pop() is called
+     * size - 1 = the view controller at the bottom of the stack
+     */
+    operator fun get(index: Int): ViewController {
+        return internalStack[internalStack.size - 1 - index]
+    }
+
     var defaultPushAnimation = AnimationSet.slidePush
     var defaultPopAnimation = AnimationSet.slidePop
     var defaultSwapAnimation = AnimationSet.fade
