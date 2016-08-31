@@ -83,6 +83,14 @@ fun Activity.standardDialog(
         content
 )
 
+object CustomDialog {
+    fun okButton(resources: Resources, okResource: Int = R.string.ok, action: () -> Unit = {}, okStyle: (Button) -> Unit): Triple<String, (VCStack) -> Unit, (Button) -> Unit> =
+            Triple(resources.getString(okResource), { it: VCStack -> action(); it.pop() }, okStyle)
+
+    fun cancelButton(resources: Resources, cancelResource: Int = R.string.cancel, action: () -> Unit = {}, cancelStyle: (Button) -> Unit): Triple<String, (VCStack) -> Unit, (Button) -> Unit> =
+            Triple(resources.getString(cancelResource), { it: VCStack -> action(); it.pop() }, cancelStyle)
+}
+
 /**
  * Creates a psuedo-dialog that is actually an activity.  Significantly more stable and safe.
  */
@@ -138,6 +146,73 @@ fun Activity.standardDialog(
     }
 }
 
+fun Activity.customDialog(
+        title: Int?,
+        message: Int,
+        buttons: List<Triple<String, (VCStack) -> Unit, (Button) -> Unit>>,
+        dismissOnClickOutside: Boolean = true,
+        content: (ViewGroup.(VCStack) -> View)? = null
+) = customDialog(
+        if (title != null) resources.getString(title) else null,
+        resources.getString(message),
+        buttons,
+        dismissOnClickOutside,
+        content
+)
+
+/**
+ * Creates a psuedo-dialog that is actually an activity.  Significantly more stable and safe.
+ */
+fun Activity.customDialog(
+        title: String?,
+        message: String,
+        buttons: List<Triple<String, (VCStack) -> Unit, (Button) -> Unit>>,
+        dismissOnClickOutside: Boolean = true,
+        content: (ViewGroup.(VCStack) -> View)? = null
+) {
+    return dialog(dismissOnClickOutside, layoutParamModifier = { width = matchParent }) { ui, vcStack ->
+        ui.scrollView {
+            verticalLayout {
+                //title
+                textView(title) {
+                    styleTitle()
+                    if (title.isNullOrEmpty()) {
+                        visibility = View.GONE
+                    }
+                }.lparams(matchParent, wrapContent) {
+                    standardMargins(context)
+                    topMargin = dip(16)
+                }
+
+                //message
+                textView(message) {
+                    styleMessage()
+                }.lparams(matchParent, wrapContent) {
+                    standardMargins(context)
+                }
+
+                //custom content
+                content?.invoke(this, vcStack)?.lparams(matchParent, wrapContent) {
+                    standardMargins(context)
+                }
+
+                //buttons
+                linearLayout {
+                    gravity = Gravity.END
+                    buttons.forEach { triple ->
+                        button(triple.first) {
+                            onClick { triple.second(vcStack) }
+                            triple.third.invoke(this)
+                        }.lparams {
+                            standardMargins(context)
+                        }
+                    }
+                }.lparams(matchParent, wrapContent)
+            }
+        }
+    }
+}
+
 fun Activity.confirmationDialog(title: Int? = null, message: Int, onCancel: () -> Unit = {}, onConfirm: () -> Unit) {
     return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm), StandardDialog.cancelButton(resources, action = onCancel)))
 }
@@ -160,6 +235,15 @@ fun Activity.confirmationDialog(title: Int? = null, message: Int, okResource: In
             message,
             listOf(StandardDialog.okButton(resources, okResource, onPositiveAction), StandardDialog.cancelButton(resources, cancelResource, onNegativeAction)),
             dismissOnClickOutside = dismissOnClickOutside)
+}
+
+fun Activity.customConfirmationDialog(title: Int? = null, message: Int, okResource: Int = R.string.ok, cancelResource: Int = R.string.cancel, dismissOnClickOutside: Boolean = true, onPositiveAction: () -> Unit, onNegativeAction: () -> Unit, okStyle: (Button) -> Unit, cancelStyle: (Button) -> Unit) {
+    return customDialog(
+            title,
+            message,
+            listOf(CustomDialog.okButton(resources, okResource, onPositiveAction, okStyle), CustomDialog.cancelButton(resources, cancelResource, onNegativeAction, cancelStyle)),
+            dismissOnClickOutside = dismissOnClickOutside
+    )
 }
 
 fun Activity.infoDialog(title: Int? = null, message: Int, onConfirm: () -> Unit = {}) {
