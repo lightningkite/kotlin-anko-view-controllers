@@ -237,7 +237,7 @@ fun Activity.confirmationDialog(title: Int? = null, message: Int, okResource: In
             dismissOnClickOutside = dismissOnClickOutside)
 }
 
-fun Activity.customConfirmationDialog(title: Int? = null, message: Int, okResource: Int = R.string.ok, cancelResource: Int = R.string.cancel, dismissOnClickOutside: Boolean = true, onPositiveAction: () -> Unit, onNegativeAction: () -> Unit, okStyle: (Button) -> Unit, cancelStyle: (Button) -> Unit) {
+fun Activity.customConfirmationDialog(title: Int? = null, message: Int, okResource: Int = R.string.ok, cancelResource: Int = R.string.cancel, dismissOnClickOutside: Boolean = true, onPositiveAction: () -> Unit, onNegativeAction: () -> Unit, okStyle: Button.() -> Unit, cancelStyle: Button.() -> Unit) {
     return customDialog(
             title,
             message,
