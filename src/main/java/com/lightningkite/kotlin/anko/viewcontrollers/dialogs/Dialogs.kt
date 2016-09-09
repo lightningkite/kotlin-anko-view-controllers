@@ -59,6 +59,38 @@ object StandardDialog {
             resources.getString(cancelResource) to { it: VCStack -> action(); it.pop() }
 
     fun cancelButton(resources: Resources): Pair<String, (VCStack) -> Unit> = resources.getString(R.string.cancel) to { it: VCStack -> it.pop() }
+
+
+    inline fun ViewGroup.MarginLayoutParams.standardMargins(ctx: Context) {
+        leftMargin = ctx.dip(16)
+        rightMargin = ctx.dip(16)
+        topMargin = ctx.dip(8)
+        bottomMargin = ctx.dip(8)
+    }
+
+    inline fun TextView.styleTitle() {
+        textSize = 18f
+        setTypeface(null, Typeface.BOLD)
+        textColorResource = R.color.primary_text_light
+    }
+
+    inline fun TextView.styleMessage() {
+        textSize = 16f
+        textColorResource = R.color.secondary_text_light
+    }
+
+    inline fun Button.styleNormal() {
+        textSize = 16f
+        textColorResource = R.color.secondary_text_light
+        setAllCaps(true)
+        backgroundResource = selectableItemBackgroundBorderlessResource
+    }
+
+    private inline fun Button.styleDestructive() {
+        textSize = 16f
+        textColor = Color.RED
+        setAllCaps(true)
+    }
 }
 
 fun Activity.alertDialog(message: Int) = standardDialog(
@@ -71,13 +103,13 @@ fun Activity.alertDialog(message: Int) = standardDialog(
 
 fun Activity.standardDialog(
         title: Int?,
-        message: Int,
+        message: Int?,
         buttons: List<Pair<String, (VCStack) -> Unit>>,
         dismissOnClickOutside: Boolean = true,
         content: (ViewGroup.(VCStack) -> View)? = null
 ) = standardDialog(
         if (title != null) resources.getString(title) else null,
-        resources.getString(message),
+        if (message != null) resources.getString(message) else null,
         buttons,
         dismissOnClickOutside,
         content
@@ -96,7 +128,7 @@ object CustomDialog {
  */
 fun Activity.standardDialog(
         title: String?,
-        message: String,
+        message: String?,
         buttons: List<Pair<String, (VCStack) -> Unit>>,
         dismissOnClickOutside: Boolean = true,
         content: (ViewGroup.(VCStack) -> View)? = null
@@ -118,6 +150,9 @@ fun Activity.standardDialog(
                 //message
                 textView(message) {
                     styleMessage()
+                    if (message.isNullOrEmpty()) {
+                        visibility = View.GONE
+                    }
                 }.lparams(matchParent, wrapContent) {
                     standardMargins(context)
                 }
