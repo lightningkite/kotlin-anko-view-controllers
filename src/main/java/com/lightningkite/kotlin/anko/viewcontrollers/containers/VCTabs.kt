@@ -30,6 +30,16 @@ class VCTabs(startIndex: Int, vcs: List<ViewController>) : VCContainerImpl() {
         index = newIndex
     }
 
+    fun replace(modifyIndex: Int, newController: ViewController) {
+        viewControllers[modifyIndex] = newController
+        if (index == modifyIndex) {
+            swapListener?.invoke(newController,
+                    AnimationSet.fade,
+                    {})
+            onSwap.forEach { it(current) }
+        }
+    }
+
     var oldIndex: Int = startIndex
     val onChangeListener: (Int) -> Unit = { it: Int ->
         swapListener?.invoke(viewControllers[it],
