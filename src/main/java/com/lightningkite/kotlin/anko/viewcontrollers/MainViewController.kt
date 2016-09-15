@@ -74,7 +74,7 @@ abstract class MainViewController(val backResource: Int, val styleToolbar: Toolb
     }
 
     fun attach(activity: VCActivity, stack: VCStack, onMenuClick: (() -> Unit)? = null) {
-        lifecycle.bind(stack.onSwap, stack.current) {
+        fullLifecycle.bind(stack.onSwap, stack.current) {
             toolbar?.apply {
                 if (stack.size > 1 || alwaysShowBack) {
                     setNavigationIcon(backResource)
@@ -93,7 +93,7 @@ abstract class MainViewController(val backResource: Int, val styleToolbar: Toolb
     }
 
     fun attach(activity: VCActivity, container: VCContainer) {
-        lifecycle.bind(container.onSwap, container.current) {
+        fullLifecycle.bind(container.onSwap, container.current) {
             toolbar?.apply {
                 setToolbarTitle(container.getTitle(resources))
             }

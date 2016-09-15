@@ -27,12 +27,17 @@ abstract class StandardViewController() : ViewController {
     val onUnmake: ArrayList<(View) -> Unit> = ArrayList()
     val onDispose: ArrayList<() -> Unit> = ArrayList()
 
-    val lifecycle: LifecycleConnectable = object : LifecycleConnectable {
+    val viewLifecycle: LifecycleConnectable = object : LifecycleConnectable {
         override fun connect(listener: LifecycleListener) {
             onMake.add { listener.onStart() }
             onUnmake.add { listener.onStop() }
         }
-
+    }
+    val fullLifecycle: LifecycleConnectable = object : LifecycleConnectable {
+        override fun connect(listener: LifecycleListener) {
+            listener.onStart()
+            onDispose.add { listener.onStop() }
+        }
     }
 
     /**

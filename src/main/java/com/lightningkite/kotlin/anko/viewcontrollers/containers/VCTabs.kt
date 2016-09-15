@@ -19,6 +19,7 @@ class VCTabs(startIndex: Int, vcs: List<ViewController>) : VCContainerImpl() {
     val onIndexChange = ArrayList<(Int) -> Unit>()
     var index: Int = startIndex
         set(value) {
+            if (value == field) return
             field = value
             onIndexChange.runAll(value)
         }
@@ -26,7 +27,6 @@ class VCTabs(startIndex: Int, vcs: List<ViewController>) : VCContainerImpl() {
     override val current: ViewController get() = viewControllers[index]
 
     fun swap(newIndex: Int) {
-        if (index == newIndex) return;
         index = newIndex
     }
 
