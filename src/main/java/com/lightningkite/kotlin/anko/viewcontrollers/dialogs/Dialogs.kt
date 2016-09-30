@@ -281,11 +281,11 @@ fun Activity.customConfirmationDialog(title: Int? = null, message: Int, okResour
     )
 }
 
-fun Activity.infoDialog(title: Int? = null, message: Int, onConfirm: () -> Unit = {}) {
-    return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm)))
+fun Activity.infoDialog(title: Int? = null, message: Int, content: (ViewGroup.(VCStack) -> View)? = null, onConfirm: () -> Unit = {}) {
+    return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm)), content = content)
 }
 
-fun Activity.infoDialog(title: String? = null, message: String, onConfirm: () -> Unit = {}) {
+fun Activity.infoDialog(title: String? = null, message: String, content: (ViewGroup.(VCStack) -> View)? = null, onConfirm: () -> Unit = {}) {
     return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm)))
 }
 
