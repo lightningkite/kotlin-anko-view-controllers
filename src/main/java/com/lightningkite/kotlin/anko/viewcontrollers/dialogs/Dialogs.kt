@@ -286,7 +286,7 @@ fun Activity.infoDialog(title: Int? = null, message: Int, content: (ViewGroup.(V
 }
 
 fun Activity.infoDialog(title: String? = null, message: String, content: (ViewGroup.(VCStack) -> View)? = null, onConfirm: () -> Unit = {}) {
-    return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm)))
+    return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm)), content = content)
 }
 
 
