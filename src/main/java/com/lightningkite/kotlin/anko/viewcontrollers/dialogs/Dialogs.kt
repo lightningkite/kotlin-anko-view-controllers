@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import com.lightningkite.kotlin.anko.hideSoftInput
 import com.lightningkite.kotlin.anko.selectableItemBackgroundBorderlessResource
 import com.lightningkite.kotlin.anko.snackbar
 import com.lightningkite.kotlin.anko.textColorResource
@@ -316,11 +317,13 @@ fun Activity.inputDialog(
             message,
             listOf(
                     resources.getString(R.string.cancel)!! to { it: VCStack ->
+                        hideSoftInput()
                         onResult(null)
                         it.pop()
                     },
                     resources.getString(R.string.ok)!! to { it: VCStack ->
                         if (et != null) {
+                            hideSoftInput()
                             val result = et!!.text.toString()
                             val error = validation(result)
                             if (error == null) {
