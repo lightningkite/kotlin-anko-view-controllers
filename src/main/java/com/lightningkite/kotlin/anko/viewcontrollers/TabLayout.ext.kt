@@ -26,14 +26,10 @@ inline fun TabLayout.setUpWithVCTabs(vcTabs: VCTabs, crossinline onReselect: (In
         index++
     }
 
-    var iSetIndex = false
-
     addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
 
         val listener: (Int) -> Unit = {
-            if (iSetIndex) {
-                iSetIndex = false
-            } else if (it == selectedTabPosition) {
+            if (it == selectedTabPosition) {
 
             } else {
                 getTabAt(it)?.select()
@@ -59,8 +55,8 @@ inline fun TabLayout.setUpWithVCTabs(vcTabs: VCTabs, crossinline onReselect: (In
 
         override fun onTabSelected(tab: TabLayout.Tab) {
             onSelectBeforeChange(tab.position - offset)
-            iSetIndex = true
-            vcTabs.index = tab.position - offset
+            if (vcTabs.index != tab.position - offset)
+                vcTabs.index = tab.position - offset
         }
 
     })
