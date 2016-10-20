@@ -4,12 +4,12 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import com.lightningkite.kotlin.anko.animation.AnimationSet
 import com.lightningkite.kotlin.anko.async.AndroidAsync
-import com.lightningkite.kotlin.anko.runIfNewerThan
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCStack
@@ -158,7 +158,7 @@ abstract class VCActivity : Activity() {
 
     @TargetApi(23)
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        runIfNewerThan(23) {
+        if (Build.VERSION.SDK_INT >= 23) {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
             val map = HashMap<String, Int>()
