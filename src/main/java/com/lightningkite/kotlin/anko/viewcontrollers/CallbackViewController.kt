@@ -4,13 +4,17 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.lightningkite.kotlin.Disposable
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
+import com.lightningkite.kotlin.anko.viewcontrollers.implementations.ContainerVC
 import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCActivity
-import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCView
+import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCContainerEmbedder
 import com.lightningkite.kotlin.lifecycle.LifecycleConnectable
 import com.lightningkite.kotlin.lifecycle.LifecycleListener
 import com.lightningkite.kotlin.runAll
+import org.jetbrains.anko.AnkoContext
+import org.jetbrains.anko.matchParent
 import java.util.*
 
 /**
@@ -19,7 +23,7 @@ import java.util.*
  *
  */
 
-abstract class StandardViewController() : ViewController {
+abstract class CallbackViewController() : ViewController {
 
     val onMake: ArrayList<(View) -> Unit> = ArrayList()
     val onAnimateInComplete: ArrayList<(VCActivity, View) -> Unit> = ArrayList()
@@ -44,7 +48,7 @@ abstract class StandardViewController() : ViewController {
      * Adds the item to the collection immediately, but removes it when [unmake] is called.
      * The primary use of this is binding things in [make] that need to be removed when [unmake] is called.
      */
-    @Deprecated("Use [StandardViewController.listen] instead.")
+    @Deprecated("Use [CallbackViewController.listen] instead.")
     fun <T> connectVC(collection: MutableCollection<T>, item: T): T {
         collection.add(item)
         onUnmake.add {
@@ -57,7 +61,7 @@ abstract class StandardViewController() : ViewController {
      * Adds the item to the collections immediately, but removes the item from all of the collections when [unmake] is called.
      * The primary use of this is binding things in [make] that need to be removed when [unmake] is called.
      */
-    @Deprecated("Use [StandardViewController.listen] instead.")
+    @Deprecated("Use [CallbackViewController.listen] instead.")
     fun <T> connectManyVC(vararg collections: MutableCollection<T>, item: T): T {
         for (collection in collections) {
             collection.add(item)
@@ -107,49 +111,60 @@ abstract class StandardViewController() : ViewController {
         return disposable
     }
 
-    inline fun ViewGroup.viewContainer(container: VCContainer): VCView {
-        val vcview = VCView(context as VCActivity)
-        vcview.wholeViewAnimatingIn = true
-        vcview.attach(container)
-        onAnimateInComplete.add { activity, view ->
-            vcview.animateInComplete(activity, view)
-        }
-        onAnimateOutStart.add { activity, view ->
-            vcview.animateOutStart(activity, view)
-        }
-        onUnmake.add {
-            vcview.detatch()
-        }
-        addView(vcview)
-        return vcview
+
+    inline fun AnkoContext<*>.viewContainer(container: VCContainer): View {
+        return viewController(ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), {})
     }
 
-    inline fun ViewGroup.viewContainer(container: VCContainer, init: VCView.() -> Unit): VCView {
-        val vcview = VCView(context as VCActivity)
-        vcview.init()
-        vcview.wholeViewAnimatingIn = true
-        vcview.attach(container)
-        onAnimateInComplete.add { activity, view ->
-            vcview.animateInComplete(activity, view)
-        }
-        onAnimateOutStart.add { activity, view ->
-            vcview.animateOutStart(activity, view)
-        }
-        onUnmake.add {
-            vcview.detatch()
-        }
-        addView(vcview)
-        return vcview
+    inline fun AnkoContext<*>.viewContainer(container: VCContainer, init: View.() -> Unit): View {
+        return viewController(ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), init)
     }
 
-    fun ViewGroup.viewController(controller: ViewController, init: View.() -> Unit): View {
-        val view = controller.make(context as VCActivity)
-        addView(view)
+    inline fun AnkoContext<*>.viewController(controller: ViewController, init: View.() -> Unit): View {
+        val view = controller.make(ctx as VCActivity)
+        addView(view, ViewGroup.LayoutParams(matchParent, matchParent))
         view.init()
+        onAnimateInComplete.add { activity, view ->
+            controller.animateInComplete(activity, view)
+        }
+        onAnimateOutStart.add { activity, view ->
+            controller.animateOutStart(activity, view)
+        }
         onUnmake.add {
             controller.unmake(view)
         }
         return view
+    }
+
+    inline fun ViewGroup.viewContainer(container: VCContainer): View {
+        return viewController(ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), {})
+    }
+
+    inline fun ViewGroup.viewContainer(container: VCContainer, init: View.() -> Unit): View {
+        return viewController(ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), init)
+    }
+
+    inline fun ViewGroup.viewController(controller: ViewController, init: View.() -> Unit): View {
+        val view = controller.make(context as VCActivity)
+        addView(view)
+        view.init()
+        onAnimateInComplete.add { activity, view ->
+            controller.animateInComplete(activity, view)
+        }
+        onAnimateOutStart.add { activity, view ->
+            controller.animateOutStart(activity, view)
+        }
+        onUnmake.add {
+            controller.unmake(view)
+        }
+        return view
+    }
+
+    fun <ROOT : ViewGroup> ROOT.embedViewContainer(container: VCContainer, makeLayoutParams: () -> ViewGroup.LayoutParams) {
+        val embedder = VCContainerEmbedder(this@embedViewContainer, container, makeLayoutParams)
+        onAnimateInComplete += { a, b -> embedder.animateInComplete(a, b) }
+        onAnimateOutStart += { a, b -> embedder.animateOutStart(a, b) }
+        onUnmake += { embedder.unmake() }
     }
 
     @Deprecated("Please use text resources.  It's better anyways.")

@@ -11,7 +11,7 @@ import org.jetbrains.anko.AnkoContextImpl
  *
  */
 
-abstract class AnkoViewController() : StandardViewController(), AnkoComponent<VCActivity> {
+abstract class AnkoViewController() : CallbackViewController(), AnkoComponent<VCActivity> {
     override final fun makeView(activity: VCActivity): View {
         return createView(AnkoContextImpl(activity, activity, false))
     }

@@ -3,8 +3,11 @@ package com.lightningkite.kotlin.anko.viewcontrollers.implementations
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.view.Window
+import android.widget.RelativeLayout
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCStack
+import org.jetbrains.anko._RelativeLayout
+import org.jetbrains.anko.matchParent
 
 /**
  * Allows you to create a dialog using a view controller.
@@ -34,17 +37,20 @@ fun VCActivity.dialog(
     var dismissed: Boolean = false
     val builder = AlertDialog.Builder(this)
 
-    val view = VCView(this)
     stack.onEmptyListener = {
         dialog?.dismiss()
     }
-    view.attach(stack)
+    val view = _RelativeLayout(this)
+    val embedder = VCContainerEmbedder(view, stack, { RelativeLayout.LayoutParams(matchParent, matchParent) })
+    embedder.animateInComplete(this, view)
 
     dialog = builder.create()
     dialog!!.setView(view, 0, 0, 0, 0)
     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
     dialog.setOnDismissListener {
-        view.detatch()
+        embedder.animateOutStart(this, view)
+        embedder.unmake()
+        stack.dispose()
     }
     dialog.show()
 }
