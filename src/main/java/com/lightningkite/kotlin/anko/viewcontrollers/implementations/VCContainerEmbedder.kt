@@ -10,6 +10,8 @@ import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
 import org.jetbrains.anko.onClick
 
 /**
+ * Embeds the given view container in the given view, transitioning new views in and out as needed.
+ *
  * Created by joseph on 11/7/16.
  */
 class VCContainerEmbedder(val root: ViewGroup, val container: VCContainer, val makeLayoutParams: () -> ViewGroup.LayoutParams) {

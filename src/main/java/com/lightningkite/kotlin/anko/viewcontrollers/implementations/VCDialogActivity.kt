@@ -14,9 +14,7 @@ import org.jetbrains.anko.AnkoContext
 import java.util.*
 
 /**
- * All activities hosting [ViewController]s must be extended from this one.
- * It handles the calling of other activities with [onActivityResult], the attaching of a
- * [VCContainer], and use the back button on the [VCContainer].
+ * A specific [VCActivity]
  * Created by jivie on 10/12/15.
  */
 class VCDialogActivity : VCActivity() {
