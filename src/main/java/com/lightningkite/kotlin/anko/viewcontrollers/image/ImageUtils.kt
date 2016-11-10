@@ -17,6 +17,9 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * Opens a dialog requesting an image from either the camera or the gallery.
+ */
 fun VCActivity.dialogImageUri(fileProviderAuthority: String, cameraRes: Int, galleryRes: Int, onResult: (Uri?) -> Unit) {
     selector(
             null,
@@ -39,6 +42,9 @@ fun VCActivity.dialogImageUri(fileProviderAuthority: String, cameraRes: Int, gal
     )
 }
 
+/**
+ * Opens a dialog requesting an image from either the camera or the gallery.
+ */
 fun VCActivity.dialogImage(minBytes: Long, cameraRes: Int, galleryRes: Int, onResult: (Bitmap?) -> Unit) {
     selector(
             null,

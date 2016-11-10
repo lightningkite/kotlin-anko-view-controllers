@@ -7,6 +7,7 @@ import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCActivity
 
 /**
  * An object that manages a view.
+ * They are typically stored statically, ensuring that the view controller's data is retained between view recreations.
  * It should retain no references to the views except between calls to [make] and [unmake].
  * Created by jivie on 6/26/15.
  */

@@ -6,6 +6,8 @@ import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCActivity
 import org.jetbrains.anko.*
 
 /**
+ * Simply displays HTML in a view controller.  Most useful for displaying networking error messages.
+ *
  * Created by joseph on 8/4/16.
  */
 class HTMLViewController(val title: String?, val html: String) : AnkoViewController() {

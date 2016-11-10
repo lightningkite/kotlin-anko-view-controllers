@@ -14,14 +14,14 @@ import org.jetbrains.anko.AnkoContext
 import java.util.*
 
 /**
- * All activities hosting [ViewController]s must be extended from this one.
- * It handles the calling of other activities with [onActivityResult], the attaching of a
- * [VCContainer], and use the back button on the [VCContainer].
+ * A specific [VCActivity]
  * Created by jivie on 10/12/15.
  */
 class VCDialogActivity : VCActivity() {
 
-    class ContainerData(val container: VCContainer, val layoutParamsSetup: WindowManager.LayoutParams.() -> Unit, val windowModifier: Window.() -> Unit = {})
+    class ContainerData(val container: VCContainer, val layoutParamsSetup: WindowManager.LayoutParams.() -> Unit, val windowModifier: Window.() -> Unit = {}) {
+        val vc = ContainerVC(container)
+    }
 
     companion object {
         const val EXTRA_CONTAINER: String = "VCDialogActivity.containerId"
@@ -32,12 +32,14 @@ class VCDialogActivity : VCActivity() {
     var myIndex = 0
     var myContainerData: ContainerData? = null
 
+    override val viewController: ViewController
+        get() = myContainerData?.vc ?: throw IllegalStateException()
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         myIndex = intent.getIntExtra(EXTRA_CONTAINER, 0)
         myContainerData = containers[myIndex] ?: return
         setFinishOnTouchOutside(intent.getBooleanExtra(EXTRA_DISMISS_ON_TOUCH_OUTSIDE, true))
-        attach(myContainerData!!.container)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onAttachedToWindow() {

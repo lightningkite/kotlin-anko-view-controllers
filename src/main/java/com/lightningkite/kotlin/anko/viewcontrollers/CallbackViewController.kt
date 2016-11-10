@@ -4,22 +4,30 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.lightningkite.kotlin.Disposable
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
+import com.lightningkite.kotlin.anko.viewcontrollers.implementations.ContainerVC
 import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCActivity
-import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCView
+import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCContainerEmbedder
 import com.lightningkite.kotlin.lifecycle.LifecycleConnectable
 import com.lightningkite.kotlin.lifecycle.LifecycleListener
 import com.lightningkite.kotlin.runAll
+import org.jetbrains.anko.AnkoContext
+import org.jetbrains.anko.matchParent
 import java.util.*
 
 /**
+ * This view controller class implements a number of events that can be registered to, including [onMake], [onAnimateInComplete], [onAnimateOutStart], [onUnmake], and [onDispose].
+ *
+ * You register by adding a lambda to them, and can unregister by removing the lambda.  After any of these events are called, the lambdas for that event are cleared, ensuring that the lambda will only ever be called once.
+ *
+ * CallbackViewController also has some useful functions that depend on these lambdas.
  *
  * Created by jivie on 1/19/16.
- *
  */
 
-abstract class StandardViewController() : ViewController {
+abstract class CallbackViewController() : ViewController {
 
     val onMake: ArrayList<(View) -> Unit> = ArrayList()
     val onAnimateInComplete: ArrayList<(VCActivity, View) -> Unit> = ArrayList()
@@ -27,12 +35,18 @@ abstract class StandardViewController() : ViewController {
     val onUnmake: ArrayList<(View) -> Unit> = ArrayList()
     val onDispose: ArrayList<() -> Unit> = ArrayList()
 
+    /**
+     * A lifecycle object that is called when a view is created or destroyed.
+     */
     val viewLifecycle: LifecycleConnectable = object : LifecycleConnectable {
         override fun connect(listener: LifecycleListener) {
             onMake.add { listener.onStart() }
             onUnmake.add { listener.onStop() }
         }
     }
+    /**
+     * A lifecycle object that is called when the whole view controller is created or destroyed.
+     */
     val fullLifecycle: LifecycleConnectable = object : LifecycleConnectable {
         override fun connect(listener: LifecycleListener) {
             listener.onStart()
@@ -44,7 +58,7 @@ abstract class StandardViewController() : ViewController {
      * Adds the item to the collection immediately, but removes it when [unmake] is called.
      * The primary use of this is binding things in [make] that need to be removed when [unmake] is called.
      */
-    @Deprecated("Use [StandardViewController.listen] instead.")
+    @Deprecated("Use [CallbackViewController.listen] instead.")
     fun <T> connectVC(collection: MutableCollection<T>, item: T): T {
         collection.add(item)
         onUnmake.add {
@@ -57,7 +71,7 @@ abstract class StandardViewController() : ViewController {
      * Adds the item to the collections immediately, but removes the item from all of the collections when [unmake] is called.
      * The primary use of this is binding things in [make] that need to be removed when [unmake] is called.
      */
-    @Deprecated("Use [StandardViewController.listen] instead.")
+    @Deprecated("Use [CallbackViewController.listen] instead.")
     fun <T> connectManyVC(vararg collections: MutableCollection<T>, item: T): T {
         for (collection in collections) {
             collection.add(item)
@@ -107,49 +121,81 @@ abstract class StandardViewController() : ViewController {
         return disposable
     }
 
-    inline fun ViewGroup.viewContainer(container: VCContainer): VCView {
-        val vcview = VCView(context as VCActivity)
-        vcview.wholeViewAnimatingIn = true
-        vcview.attach(container)
-        onAnimateInComplete.add { activity, view ->
-            vcview.animateInComplete(activity, view)
-        }
-        onAnimateOutStart.add { activity, view ->
-            vcview.animateOutStart(activity, view)
-        }
-        onUnmake.add {
-            vcview.detatch()
-        }
-        addView(vcview)
-        return vcview
+
+    /**
+     * Creates a view that shows whatever is in the view container, transitioning between view controllers as needed.
+     */
+    inline fun AnkoContext<*>.viewContainer(container: VCContainer): View {
+        return viewController(ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), {})
     }
 
-    inline fun ViewGroup.viewContainer(container: VCContainer, init: VCView.() -> Unit): VCView {
-        val vcview = VCView(context as VCActivity)
-        vcview.init()
-        vcview.wholeViewAnimatingIn = true
-        vcview.attach(container)
-        onAnimateInComplete.add { activity, view ->
-            vcview.animateInComplete(activity, view)
-        }
-        onAnimateOutStart.add { activity, view ->
-            vcview.animateOutStart(activity, view)
-        }
-        onUnmake.add {
-            vcview.detatch()
-        }
-        addView(vcview)
-        return vcview
+    /**
+     * Creates a view that shows whatever is in the view container, transitioning between view controllers as needed.
+     */
+    inline fun AnkoContext<*>.viewContainer(container: VCContainer, init: View.() -> Unit): View {
+        return viewController(ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), init)
     }
 
-    fun ViewGroup.viewController(controller: ViewController, init: View.() -> Unit): View {
-        val view = controller.make(context as VCActivity)
-        addView(view)
+    /**
+     * Creates a view that shows a single [ViewController].
+     */
+    inline fun AnkoContext<*>.viewController(controller: ViewController, init: View.() -> Unit): View {
+        val view = controller.make(ctx as VCActivity)
+        addView(view, ViewGroup.LayoutParams(matchParent, matchParent))
         view.init()
+        onAnimateInComplete.add { activity, view ->
+            controller.animateInComplete(activity, view)
+        }
+        onAnimateOutStart.add { activity, view ->
+            controller.animateOutStart(activity, view)
+        }
         onUnmake.add {
             controller.unmake(view)
         }
         return view
+    }
+
+    /**
+     * Creates a view that shows whatever is in the view container, transitioning between view controllers as needed.
+     */
+    inline fun ViewGroup.viewContainer(container: VCContainer): View {
+        return viewController(ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), {})
+    }
+
+    /**
+     * Creates a view that shows whatever is in the view container, transitioning between view controllers as needed.
+     */
+    inline fun ViewGroup.viewContainer(container: VCContainer, init: View.() -> Unit): View {
+        return viewController(ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), init)
+    }
+
+    /**
+     * Creates a view that shows a single [ViewController].
+     */
+    inline fun ViewGroup.viewController(controller: ViewController, init: View.() -> Unit): View {
+        val view = controller.make(context as VCActivity)
+        addView(view)
+        view.init()
+        onAnimateInComplete.add { activity, view ->
+            controller.animateInComplete(activity, view)
+        }
+        onAnimateOutStart.add { activity, view ->
+            controller.animateOutStart(activity, view)
+        }
+        onUnmake.add {
+            controller.unmake(view)
+        }
+        return view
+    }
+
+    /**
+     * Embeds the views generated by view controllers within [container] in the receiver view, animating them in and out as needed.
+     */
+    fun <ROOT : ViewGroup> ROOT.embedViewContainer(container: VCContainer, makeLayoutParams: () -> ViewGroup.LayoutParams) {
+        val embedder = VCContainerEmbedder(this@embedViewContainer, container, makeLayoutParams)
+        onAnimateInComplete += { a, b -> embedder.animateInComplete(a, b) }
+        onAnimateOutStart += { a, b -> embedder.animateOutStart(a, b) }
+        onUnmake += { embedder.unmake() }
     }
 
     @Deprecated("Please use text resources.  It's better anyways.")
@@ -166,7 +212,18 @@ abstract class StandardViewController() : ViewController {
         }
     }
 
-    inline fun Menu.item(textRes: Int, iconRes: Int, groupId: Int = 0, id: Int = textRes + iconRes, order: Int = Menu.CATEGORY_CONTAINER or (textRes and 0xFFFF), crossinline setup: MenuItem.() -> Unit) {
+    /**
+     * Adds an item to a menu for the duration of this ViewController.
+     * Does not support more than one view created by the same view controller.
+     */
+    inline fun Menu.item(
+            textRes: Int,
+            iconRes: Int,
+            groupId: Int = 0,
+            id: Int = textRes + iconRes,
+            order: Int = Menu.CATEGORY_CONTAINER or (textRes and 0xFFFF),
+            crossinline setup: MenuItem.() -> Unit
+    ) {
         var menuItem: MenuItem? = null
         onMake.add {
             menuItem = add(groupId, id, order, textRes).apply {

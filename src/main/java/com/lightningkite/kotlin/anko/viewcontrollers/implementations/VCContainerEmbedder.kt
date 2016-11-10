@@ -1,51 +1,27 @@
 package com.lightningkite.kotlin.anko.viewcontrollers.implementations
 
-import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AbsListView
-import android.widget.FrameLayout
 import com.lightningkite.kotlin.anko.animation.AnimationSet
+import com.lightningkite.kotlin.anko.getActivity
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
-import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.onClick
 
 /**
- * A [View] that has a [VCContainer].
- * Created by jivie on 10/13/15.
+ * Embeds the given view container in the given view, transitioning new views in and out as needed.
+ *
+ * Created by joseph on 11/7/16.
  */
-open class VCView(val activity: VCActivity) : FrameLayout(activity) {
+class VCContainerEmbedder(val root: ViewGroup, val container: VCContainer, val makeLayoutParams: () -> ViewGroup.LayoutParams) {
 
-    open val defaultAnimation: AnimationSet? = AnimationSet.fade
+    var defaultAnimation: AnimationSet? = AnimationSet.fade
 
     var wholeViewAnimatingIn: Boolean = false
     var killViewAnimateOutCalled: Boolean = false
-    var defaultLayoutParams = FrameLayout.LayoutParams(matchParent, matchParent, Gravity.CENTER)
 
-    var container: VCContainer? = null
-    fun attach(newContainer: VCContainer) {
-        container = newContainer
-        newContainer.swapListener = swap
-        swap(newContainer.current, null) {}
-    }
-
-    fun detatch() {
-        unmake()
-        container?.swapListener = null
-    }
-
-    fun unmake() {
-        if (!killViewAnimateOutCalled) {
-            current?.animateOutStart(activity, currentView!!)
-            killViewAnimateOutCalled = true
-        }
-        current?.unmake(currentView!!)
-        if (currentView != null) {
-            removeView(currentView)
-        }
-        current = null
-        currentView = null
-    }
+    val activity: VCActivity get() = root.getActivity() as? VCActivity ?: throw IllegalArgumentException("Root view must belong to a VCActivity")
 
     var current: ViewController? = null
     var currentView: View? = null
@@ -55,30 +31,29 @@ open class VCView(val activity: VCActivity) : FrameLayout(activity) {
         val animation = preferredAnimation ?: defaultAnimation
         current = new
         val newView = new.make(activity).apply {
-            layoutParams = FrameLayout.LayoutParams(defaultLayoutParams.width, defaultLayoutParams.height, defaultLayoutParams.gravity)
             if (this !is AbsListView) {
                 onClick { }
             }
         }
-        this.addView(newView)
+        root.addView(newView, makeLayoutParams())
         currentView = newView
         if (old != null && oldView != null) {
             if (animation == null) {
                 old.animateOutStart(activity, oldView)
                 old.unmake(oldView)
-                removeView(oldView)
+                root.removeView(oldView)
                 onFinish()
                 new.animateInComplete(activity, newView)
             } else {
                 val animateOut = animation.animateOut
                 old.animateOutStart(activity, oldView)
-                oldView.animateOut(this).withEndAction {
+                oldView.animateOut(root).withEndAction {
                     old.unmake(oldView)
-                    removeView(oldView)
+                    root.removeView(oldView)
                     onFinish()
                 }.start()
                 val animateIn = animation.animateIn
-                newView.animateIn(this).withEndAction {
+                newView.animateIn(root).withEndAction {
                     new.animateInComplete(activity, newView)
                 }.start()
             }
@@ -90,6 +65,11 @@ open class VCView(val activity: VCActivity) : FrameLayout(activity) {
         killViewAnimateOutCalled = false
     }
 
+    init {
+        container.swapListener = swap
+        swap(container.current, null) {}
+    }
+
     fun animateInComplete(activity: VCActivity, view: View) {
         current?.animateInComplete(activity, currentView!!)
     }
@@ -98,4 +78,18 @@ open class VCView(val activity: VCActivity) : FrameLayout(activity) {
         killViewAnimateOutCalled = true
         current?.animateOutStart(activity, currentView!!)
     }
+
+    fun unmake() {
+        if (!killViewAnimateOutCalled) {
+            current?.animateOutStart(activity, currentView!!)
+            killViewAnimateOutCalled = true
+        }
+        current?.unmake(currentView!!)
+        if (currentView != null) {
+            root.removeView(currentView)
+        }
+        current = null
+        currentView = null
+    }
+
 }
