@@ -8,6 +8,8 @@ This package greatly simplifies creating different screens in an app by providin
 - Data retention - ViewControllers are built to hold information that should be displayed between view recreations by being stored statically.  This completely removes the need for storing things using `Bundle` and `Parcelable`, which are both time consuming to implement and reduce type safety.
 - Data passing - ViewControllers are built to allow easy sending of information between different views, allowing you to pass information through the constructor.  This completely removes the need for passing things using `Bundle` and `Parcelable`, which are both time consuming to implement and reduce type safety.
 
+## Example Project
+
 An example project that uses components from this library as well as some sibling libraries:
 
 [kotlin-components-starter](https://github.com/UnknownJoe796/kotlin-components-starter)
