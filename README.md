@@ -14,7 +14,16 @@ This package greatly simplifies creating different screens in an app by providin
 class MainActivity : VCActivity() {
 
     companion object {
-        val mainVC = MainVC() //this is where you create your root view controller
+         // This creates a new stack of view controllers.
+        val stack = VCStack().apply{
+            //Push an initial view controller onto the stack.
+            //This view controller is defined below.
+            push(StackDemoVC(this))
+        }
+        
+        //ContainerVC is a view controller that displays a container of other view controllers.
+        //The most important type of container (and most common) is VCStack.
+        val mainVC = ContainerVC(stack) 
     }
 
     override val viewController: ViewController
@@ -25,4 +34,38 @@ class MainActivity : VCActivity() {
 ## Example View Controller
 
 ```kotlin
-class MainVC
+//AnkoViewController is a view controller whose view is created using Anko.  This is the most common class to extend from.
+//Notice how we are passing in information through our constructor.
+class StackDemoVC(val stack: VCStack, val depth: Int = 1) : AnkoViewController() {
+
+    //This function simply defines a title for this view.  You can make other things use this later.
+    override fun getTitle(resources: Resources): String {
+        return "Stack Demo ($depth)"
+    }
+
+    //This function actually creates the view.
+    override fun createView(ui: AnkoContext<VCActivity>): View = ui.verticalLayout {
+        gravity = Gravity.CENTER
+
+        textView("This view controller has a depth of $depth.") {
+            //I typically make a separate file called "Style.kt" which defines extension functions for each view
+            //named things like "styleDefault" to handle styling.
+            styleDefault()
+        }
+
+        button("Go deeper") {
+            styleDefault()
+            onClick {
+                //This pushes a new view controller onto the stack.
+                stack.push(StackDemoVC(stack, depth + 1))
+            }
+        }
+
+        button("Go back") {
+            styleDefault()
+            onClick {
+                stack.pop()
+            }
+        }
+    }
+}
