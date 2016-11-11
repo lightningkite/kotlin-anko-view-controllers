@@ -64,6 +64,7 @@ class StackDemoVC(val stack: VCStack, val depth: Int = 1) : AnkoViewController()
         button("Go back") {
             styleDefault()
             onClick {
+                //This removes a view controller from the stack, going back to the previous view controller.
                 stack.pop()
             }
         }
