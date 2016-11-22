@@ -20,6 +20,27 @@ import java.util.*
 /**
  * Opens a dialog requesting an image from either the camera or the gallery.
  */
+fun VCActivity.dialogPublicImageUri(publicFolderName: String?, cameraRes: Int, galleryRes: Int, onResult: (Uri?) -> Unit) {
+    selector(
+            null,
+            cameraRes to {
+                requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    getPublicImageUriFromCamera(publicFolderName) {
+                        Log.i("ImageUploadLayout", it.toString())
+                        onResult(it)
+                    }
+                }
+            },
+            galleryRes to {
+                requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    getPublicImageUriFromCamera {
+                        Log.i("ImageUploadLayout", it.toString())
+                        onResult(it)
+                    }
+                }
+            }
+    )
+}
 fun VCActivity.dialogImageUri(fileProviderAuthority: String, cameraRes: Int, galleryRes: Int, onResult: (Uri?) -> Unit) {
     selector(
             null,
