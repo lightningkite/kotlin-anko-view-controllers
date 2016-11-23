@@ -14,7 +14,7 @@ import java.util.*
  * Useful if you want to have a smaller section of your view that changes, like you might with tabs.
  * Created by jivie on 10/14/15.
  */
-class ContainerVC(
+open class ContainerVC(
         val container: VCContainer,
         val disposeContainer: Boolean = true,
         val layoutParams: () -> FrameLayout.LayoutParams = { FrameLayout.LayoutParams(matchParent, matchParent) }
