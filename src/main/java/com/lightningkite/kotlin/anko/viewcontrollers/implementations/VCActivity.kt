@@ -25,7 +25,7 @@ abstract class VCActivity : Activity() {
 
     abstract val viewController: ViewController
 
-    lateinit var vcView: View
+    var vcView: View? = null
     var savedInstanceState: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +34,7 @@ abstract class VCActivity : Activity() {
         this.savedInstanceState = savedInstanceState
 
         vcView = viewController.make(this)
-        setContentView(vcView)
+        setContentView(vcView!!)
     }
 
     val onResume = HashSet<() -> Unit>()
@@ -69,7 +69,10 @@ abstract class VCActivity : Activity() {
 
     val onDestroy = HashSet<() -> Unit>()
     override fun onDestroy() {
-        viewController.unmake(vcView)
+        if (vcView != null) {
+            viewController.unmake(vcView!!)
+            vcView = null
+        }
         onDestroy.runAll()
         super.onDestroy()
     }
