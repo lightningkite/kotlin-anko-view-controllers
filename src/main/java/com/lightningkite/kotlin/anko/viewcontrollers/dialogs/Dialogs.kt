@@ -138,7 +138,7 @@ fun Activity.standardDialog(
         ui.scrollView {
             verticalLayout {
                 //title
-                textView(title) {
+                textView(text = title) {
                     styleTitle()
                     if (title.isNullOrEmpty()) {
                         visibility = View.GONE
@@ -149,7 +149,7 @@ fun Activity.standardDialog(
                 }
 
                 //message
-                textView(message) {
+                textView(text = message) {
                     styleMessage()
                     if (message.isNullOrEmpty()) {
                         visibility = View.GONE
@@ -210,7 +210,7 @@ fun Activity.customDialog(
         ui.scrollView {
             verticalLayout {
                 //title
-                textView(title) {
+                textView(text = title) {
                     styleTitle()
                     if (title.isNullOrEmpty()) {
                         visibility = View.GONE
@@ -221,7 +221,7 @@ fun Activity.customDialog(
                 }
 
                 //message
-                textView(message) {
+                textView(text = message) {
                     styleMessage()
                 }.lparams(matchParent, wrapContent) {
                     standardMargins(context)

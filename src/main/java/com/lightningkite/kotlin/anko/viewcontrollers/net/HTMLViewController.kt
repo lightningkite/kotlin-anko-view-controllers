@@ -13,7 +13,7 @@ import org.jetbrains.anko.*
 class HTMLViewController(val title: String?, val html: String) : AnkoViewController() {
     override fun createView(ui: AnkoContext<VCActivity>): View = ui.verticalLayout {
         if (title != null) {
-            textView(title) {
+            textView(text = title) {
                 padding = dip(8)
             }.lparams(matchParent, wrapContent)
         }
