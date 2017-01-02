@@ -33,7 +33,7 @@ fun VCActivity.dialogPublicImageUri(publicFolderName: String?, cameraRes: Int, g
             },
             galleryRes to {
                 requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    getPublicImageUriFromCamera {
+                    getImageUriFromGallery {
                         Log.i("ImageUploadLayout", it.toString())
                         onResult(it)
                     }
