@@ -2,12 +2,10 @@ package com.lightningkite.kotlin.anko.viewcontrollers.implementations
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
 import com.lightningkite.kotlin.anko.animation.AnimationSet
 import com.lightningkite.kotlin.anko.getActivity
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
-import org.jetbrains.anko.onClick
 
 /**
  * Embeds the given view container in the given view, transitioning new views in and out as needed.
@@ -30,11 +28,12 @@ class VCContainerEmbedder(val root: ViewGroup, val container: VCContainer, val m
         val old = current
         val animation = preferredAnimation ?: defaultAnimation
         current = new
-        val newView = new.make(activity).apply {
-            if (this !is AbsListView) {
-                onClick { }
-            }
-        }
+        val newView = new.make(activity)
+//                .apply {
+//                    if (this !is AbsListView) {
+//                        onClick { }
+//                    }
+//                }
         root.addView(newView, makeLayoutParams())
         currentView = newView
         if (old != null && oldView != null) {
