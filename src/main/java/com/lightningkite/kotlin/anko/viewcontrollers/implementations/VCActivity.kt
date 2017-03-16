@@ -8,12 +8,10 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import com.lightningkite.kotlin.anko.animation.AnimationSet
+import android.view.View
 import com.lightningkite.kotlin.anko.async.AndroidAsync
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
-import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCStack
-import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCSwapper
 import com.lightningkite.kotlin.runAll
 import java.util.*
 
@@ -25,59 +23,18 @@ import java.util.*
  */
 abstract class VCActivity : Activity() {
 
-    companion object {
-        val returns: HashMap<Int, (Int, Intent?) -> Unit> = HashMap()
-    }
+    abstract val viewController: ViewController
 
-    val onActivityResult = ArrayList<(Int, Int, Intent?) -> Unit>()
-
-    fun startIntent(intent: Intent, options: Bundle = Bundle.EMPTY, onResult: (Int, Intent?) -> Unit = { a, b -> }) {
-        val generated: Int = (Math.random() * Int.MAX_VALUE).toInt()
-        returns[generated] = onResult
-        startActivityForResult(intent, generated, options)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        onActivityResult.runAll(requestCode, resultCode, data)
-        returns[requestCode]?.invoke(resultCode, data)
-        returns.remove(requestCode)
-    }
-
-    open val defaultAnimation: AnimationSet? = AnimationSet.fade
-
-    fun attach(newController: ViewController) {
-        val newContainer = VCSwapper(newController)
-        vcView.attach(newContainer)
-    }
-
-    fun attach(newContainer: VCContainer) {
-        vcView.attach(newContainer)
-        if (newContainer is VCStack) {
-            newContainer.onEmptyListener = {
-                finish()
-            }
-        }
-    }
-
-    lateinit var vcView: VCView
-
+    var vcView: View? = null
     var savedInstanceState: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidAsync.init()
         super.onCreate(savedInstanceState)
         this.savedInstanceState = savedInstanceState
-        vcView = VCView(this)
-        setContentView(vcView)
-    }
 
-    fun onCreate(savedInstanceState: Bundle?, shouldSetContent: Boolean) {
-        super.onCreate(savedInstanceState)
-        this.savedInstanceState = savedInstanceState
-        vcView = VCView(this)
-        if (shouldSetContent) {
-            setContentView(vcView)
-        }
+        vcView = viewController.make(this)
+        setContentView(vcView!!)
     }
 
     val onResume = HashSet<() -> Unit>()
@@ -105,19 +62,40 @@ abstract class VCActivity : Activity() {
     }
 
     override fun onBackPressed() {
-        vcView.container?.onBackPressed {
+        viewController.onBackPressed {
             super.onBackPressed()
-        } ?: super.onBackPressed()
+        }
     }
 
     val onDestroy = HashSet<() -> Unit>()
     override fun onDestroy() {
-        vcView.detatch()
+        if (vcView != null) {
+            viewController.unmake(vcView!!)
+            vcView = null
+        }
         onDestroy.runAll()
         super.onDestroy()
     }
 
     val requestReturns: HashMap<Int, (Map<String, Int>) -> Unit> = HashMap()
+
+    companion object {
+        val returns: HashMap<Int, (Int, Intent?) -> Unit> = HashMap()
+    }
+
+    val onActivityResult = ArrayList<(Int, Int, Intent?) -> Unit>()
+
+    fun startIntent(intent: Intent, options: Bundle = Bundle.EMPTY, onResult: (Int, Intent?) -> Unit = { a, b -> }) {
+        val generated: Int = (Math.random() * Int.MAX_VALUE).toInt()
+        returns[generated] = onResult
+        startActivityForResult(intent, generated, options)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        onActivityResult.runAll(requestCode, resultCode, data)
+        returns[requestCode]?.invoke(resultCode, data)
+        returns.remove(requestCode)
+    }
 
     /**
      * Requests a bunch of permissions and returns a map of permissions that were previously ungranted and their new status.

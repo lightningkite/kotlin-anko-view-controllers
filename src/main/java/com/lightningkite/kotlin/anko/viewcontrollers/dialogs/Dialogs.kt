@@ -138,7 +138,7 @@ fun Activity.standardDialog(
         ui.scrollView {
             verticalLayout {
                 //title
-                textView(title) {
+                textView(text = title) {
                     styleTitle()
                     if (title.isNullOrEmpty()) {
                         visibility = View.GONE
@@ -149,7 +149,7 @@ fun Activity.standardDialog(
                 }
 
                 //message
-                textView(message) {
+                textView(text = message) {
                     styleMessage()
                     if (message.isNullOrEmpty()) {
                         visibility = View.GONE
@@ -210,7 +210,7 @@ fun Activity.customDialog(
         ui.scrollView {
             verticalLayout {
                 //title
-                textView(title) {
+                textView(text = title) {
                     styleTitle()
                     if (title.isNullOrEmpty()) {
                         visibility = View.GONE
@@ -221,7 +221,7 @@ fun Activity.customDialog(
                 }
 
                 //message
-                textView(message) {
+                textView(text = message) {
                     styleMessage()
                 }.lparams(matchParent, wrapContent) {
                     standardMargins(context)
@@ -294,8 +294,26 @@ fun Activity.infoDialog(title: String? = null, message: String, content: (ViewGr
 /**
  * Creates a dialog with an input text field on it.
  */
-fun Activity.inputDialog(title: Int, message: Int, hint: Int = 0, inputType: Int = InputType.TYPE_CLASS_TEXT, canCancel: Boolean = true, validation: (String) -> Int? = { null }, onResult: (String?) -> Unit) {
-    return inputDialog(resources.getString(title), resources.getString(message), if (hint == 0) "" else resources.getString(hint), inputType, canCancel, validation, onResult)
+fun Activity.inputDialog(
+        title: Int,
+        message: Int,
+        hint: Int = 0,
+        defaultValue: String = "",
+        inputType: Int = InputType.TYPE_CLASS_TEXT,
+        canCancel: Boolean = true,
+        validation: (String) -> Int? = { null },
+        onResult: (String?) -> Unit
+) {
+    return inputDialog(
+            title = resources.getString(title),
+            message = resources.getString(message),
+            hint = if (hint == 0) "" else resources.getString(hint),
+            defaultValue = defaultValue,
+            inputType = inputType,
+            canCancel = canCancel,
+            validation = validation,
+            onResult = onResult
+    )
 }
 
 
@@ -306,6 +324,7 @@ fun Activity.inputDialog(
         title: String,
         message: String,
         hint: String = "",
+        defaultValue: String = "",
         inputType: Int = InputType.TYPE_CLASS_TEXT,
         canCancel: Boolean = true,
         validation: (String) -> Int? = { null },
@@ -338,6 +357,7 @@ fun Activity.inputDialog(
             canCancel,
             {
                 et = editText() {
+                    this.setText(defaultValue)
                     this.inputType = inputType
                     this.hint = hint
                 }

@@ -5,9 +5,11 @@ import android.view.View
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCTabs
 
 /**
+ * Sets up a [VCTabs] with a [TabLayout], such that there is a tab for every view controller in [vcTabs].
+ * Clicking a tab will automatically tell the [VCTabs] to change view controllers.
+ * Uses [ViewController.getTitle] as the name for each tab.
  * Created by jivie on 6/6/16.
  */
-
 inline fun TabLayout.setUpWithVCTabs(vcTabs: VCTabs, crossinline onReselect: (Int) -> Unit, crossinline onSelectBeforeChange: (Int) -> Unit, crossinline tabBuilder: TabLayout.Tab.(Int) -> Unit) {
 
     val offset = tabCount

@@ -17,6 +17,30 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * Opens a dialog requesting an image from either the camera or the gallery.
+ */
+fun VCActivity.dialogPublicImageUri(fileProviderAuthority: String, publicFolderName: String?, cameraRes: Int, galleryRes: Int, onResult: (Uri?) -> Unit) {
+    selector(
+            null,
+            cameraRes to {
+                requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    getPublicImageUriFromCamera(fileProviderAuthority, publicFolderName) {
+                        Log.i("ImageUploadLayout", it.toString())
+                        onResult(it)
+                    }
+                }
+            },
+            galleryRes to {
+                requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    getImageUriFromGallery {
+                        Log.i("ImageUploadLayout", it.toString())
+                        onResult(it)
+                    }
+                }
+            }
+    )
+}
 fun VCActivity.dialogImageUri(fileProviderAuthority: String, cameraRes: Int, galleryRes: Int, onResult: (Uri?) -> Unit) {
     selector(
             null,
@@ -39,12 +63,15 @@ fun VCActivity.dialogImageUri(fileProviderAuthority: String, cameraRes: Int, gal
     )
 }
 
-fun VCActivity.dialogImage(minBytes: Long, cameraRes: Int, galleryRes: Int, onResult: (Bitmap?) -> Unit) {
+/**
+ * Opens a dialog requesting an image from either the camera or the gallery.
+ */
+fun VCActivity.dialogImage(fileProviderAuthority: String, minBytes: Long, cameraRes: Int, galleryRes: Int, onResult: (Bitmap?) -> Unit) {
     selector(
             null,
             cameraRes to {
                 requestPermissions(arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    getImageFromCamera(minBytes) {
+                    getImageFromCamera(fileProviderAuthority, minBytes) {
                         onResult(it)
                     }
                 }
@@ -137,7 +164,7 @@ fun VCActivity.getImageUriFromCamera(fileProviderAuthority: String, onResult: (U
 /**
  * Opens the camera to take a picture, returning it in [onResult].
  */
-fun VCActivity.getPublicImageUriFromCamera(publicFolderName: String? = null, onResult: (Uri?) -> Unit) {
+fun VCActivity.getPublicImageUriFromCamera(fileProviderAuthority: String, publicFolderName: String? = null, onResult: (Uri?) -> Unit) {
     try {
         val publicPictures = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         val folder = if (publicFolderName == null) publicPictures else publicPictures.child(publicFolderName)
@@ -146,7 +173,8 @@ fun VCActivity.getPublicImageUriFromCamera(publicFolderName: String? = null, onR
 
         val timeStamp = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(Date())
         val file = folder.child(timeStamp + ".jpg")
-        val potentialFile: Uri = Uri.fromFile(file)
+
+        val potentialFile = FileProvider.getUriForFile(this, fileProviderAuthority, file)
 
         getImageUriFromCamera(potentialFile, onResult)
     } catch(e: Exception) {
@@ -204,7 +232,7 @@ fun VCActivity.getImageFromGallery(minBytes: Long, onResult: (Bitmap?) -> Unit) 
 /**
  * Opens the camera to take a picture, returning it in [onResult].
  */
-fun VCActivity.getImageFromCamera(minBytes: Long, onResult: (Bitmap?) -> Unit) {
+fun VCActivity.getImageFromCamera(fileProviderAuthority: String, minBytes: Long, onResult: (Bitmap?) -> Unit) {
     val folder = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
     val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
     if (folder == null) {
@@ -216,7 +244,7 @@ fun VCActivity.getImageFromCamera(minBytes: Long, onResult: (Bitmap?) -> Unit) {
 
     val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
     val file = File(folder, "image_" + timeStamp + "_raw.jpg")
-    val potentialFile: Uri = Uri.fromFile(file)
+    val potentialFile = FileProvider.getUriForFile(this, fileProviderAuthority, file)
 
     intent.putExtra(MediaStore.EXTRA_OUTPUT, potentialFile)
     this.startIntent(intent) { code, data ->

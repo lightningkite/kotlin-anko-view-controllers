@@ -18,7 +18,7 @@ interface VCContainer : Disposable {
     val current: ViewController
 
     fun onBackPressed(backAction: () -> Unit) {
-        current.onBackPressed (backAction)
+        current.onBackPressed(backAction)
     }
 
     fun getTitle(resources: Resources): String {
