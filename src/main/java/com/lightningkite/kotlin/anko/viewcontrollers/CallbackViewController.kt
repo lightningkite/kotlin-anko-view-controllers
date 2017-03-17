@@ -170,6 +170,13 @@ abstract class CallbackViewController() : ViewController {
     }
 
     /**
+     * Creates a view that shows whatever is in the view container, transitioning between view controllers as needed.
+     */
+    inline fun ViewGroup.viewContainer(container: VCContainer, params: FrameLayout.LayoutParams, init: View.() -> Unit): View {
+        return viewController(ContainerVC(container, false, { params }), init)
+    }
+
+    /**
      * Creates a view that shows a single [ViewController].
      */
     inline fun ViewGroup.viewController(controller: ViewController, init: View.() -> Unit): View {
