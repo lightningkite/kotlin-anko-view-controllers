@@ -32,15 +32,17 @@ class VCDialogActivity : VCActivity() {
     var myContainerData: ContainerData? = null
 
     override val viewController: ViewController
-        get() = myContainerData?.vc ?: throw IllegalStateException()
+        get() = myContainerData?.vc ?: ViewController.EMPTY
 
     override fun onCreate(savedInstanceState: Bundle?) {
         myIndex = intent.getIntExtra(EXTRA_CONTAINER, 0)
-        myContainerData = containers[myIndex] ?: return
-        myContainerData!!.container.onEmptyListener = {
-            finish()
+        myContainerData = containers[myIndex]
+        if (myContainerData != null) {
+            myContainerData!!.container.onEmptyListener = {
+                finish()
+            }
+            setFinishOnTouchOutside(intent.getBooleanExtra(EXTRA_DISMISS_ON_TOUCH_OUTSIDE, true))
         }
-        setFinishOnTouchOutside(intent.getBooleanExtra(EXTRA_DISMISS_ON_TOUCH_OUTSIDE, true))
         super.onCreate(savedInstanceState)
     }
 
