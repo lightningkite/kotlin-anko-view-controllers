@@ -42,8 +42,11 @@ class VCDialogActivity : VCActivity() {
                 finish()
             }
             setFinishOnTouchOutside(intent.getBooleanExtra(EXTRA_DISMISS_ON_TOUCH_OUTSIDE, true))
+            super.onCreate(savedInstanceState)
+        } else {
+            super.onCreate(savedInstanceState)
+            finish()
         }
-        super.onCreate(savedInstanceState)
     }
 
     override fun onAttachedToWindow() {
