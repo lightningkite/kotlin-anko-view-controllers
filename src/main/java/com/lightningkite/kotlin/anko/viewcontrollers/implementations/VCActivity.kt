@@ -91,6 +91,11 @@ abstract class VCActivity : Activity() {
         return generated
     }
 
+    fun prepareOnResult(presetCode: Int, onResult: (Int, Intent?) -> Unit = { a, b -> }): Int {
+        returns[presetCode] = onResult
+        return presetCode
+    }
+
     fun startIntent(intent: Intent, options: Bundle = Bundle.EMPTY, onResult: (Int, Intent?) -> Unit = { a, b -> }) {
         val generated: Int = (Math.random() * Int.MAX_VALUE).toInt()
         returns[generated] = onResult
