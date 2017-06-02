@@ -336,13 +336,13 @@ fun Activity.inputDialog(
             message,
             listOf(
                     resources.getString(R.string.cancel)!! to { it: VCStack ->
-                        hideSoftInput()
+                        et?.hideSoftInput()
                         onResult(null)
                         it.pop()
                     },
                     resources.getString(R.string.ok)!! to { it: VCStack ->
                         if (et != null) {
-                            hideSoftInput()
+                            et?.hideSoftInput()
                             val result = et!!.text.toString()
                             val error = validation(result)
                             if (error == null) {
