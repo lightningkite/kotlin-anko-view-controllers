@@ -3,6 +3,7 @@ package com.lightningkite.kotlin.anko.viewcontrollers.implementations
 import android.content.res.Resources
 import android.view.View
 import android.widget.FrameLayout
+import com.lightningkite.kotlin.anko.viewcontrollers.VCContext
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
 import org.jetbrains.anko._FrameLayout
@@ -22,8 +23,8 @@ open class ContainerVC(
 
     private var embedders = HashMap<View, VCContainerEmbedder>()
 
-    override fun make(activity: VCActivity): View {
-        val vcView = _FrameLayout(activity).apply {
+    override fun make(vcContext: VCContext): View {
+        val vcView = _FrameLayout(vcContext.context).apply {
             embedders[this] = (VCContainerEmbedder(this, container, { layoutParams() }))
         }
         return vcView
@@ -35,14 +36,14 @@ open class ContainerVC(
         super.unmake(view)
     }
 
-    override fun animateInComplete(activity: VCActivity, view: View) {
-        embedders[view]?.animateInComplete(activity, view)
-        super.animateInComplete(activity, view)
+    override fun animateInComplete(vcContext: VCContext, view: View) {
+        embedders[view]?.animateInComplete(vcContext, view)
+        super.animateInComplete(vcContext, view)
     }
 
-    override fun animateOutStart(activity: VCActivity, view: View) {
-        embedders[view]?.animateOutStart(activity, view)
-        super.animateOutStart(activity, view)
+    override fun animateOutStart(vcContext: VCContext, view: View) {
+        embedders[view]?.animateOutStart(vcContext, view)
+        super.animateOutStart(vcContext, view)
     }
 
     override fun dispose() {
