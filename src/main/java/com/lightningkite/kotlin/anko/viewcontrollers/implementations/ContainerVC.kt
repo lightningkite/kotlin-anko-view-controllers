@@ -25,7 +25,7 @@ open class ContainerVC(
 
     override fun make(vcContext: VCContext): View {
         val vcView = _FrameLayout(vcContext.context).apply {
-            embedders[this] = (VCContainerEmbedder(this, container, { layoutParams() }))
+            embedders[this] = (VCContainerEmbedder(vcContext, this, container, { layoutParams() }))
         }
         return vcView
     }

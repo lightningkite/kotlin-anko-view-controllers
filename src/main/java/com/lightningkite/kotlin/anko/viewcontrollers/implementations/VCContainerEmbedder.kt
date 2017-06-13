@@ -3,7 +3,6 @@ package com.lightningkite.kotlin.anko.viewcontrollers.implementations
 import android.view.View
 import android.view.ViewGroup
 import com.lightningkite.kotlin.anko.animation.AnimationSet
-import com.lightningkite.kotlin.anko.getActivity
 import com.lightningkite.kotlin.anko.viewcontrollers.VCContext
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
@@ -13,14 +12,12 @@ import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
  *
  * Created by joseph on 11/7/16.
  */
-class VCContainerEmbedder(val root: ViewGroup, val container: VCContainer, val makeLayoutParams: () -> ViewGroup.LayoutParams) {
+class VCContainerEmbedder(val vcContext: VCContext, val root: ViewGroup, val container: VCContainer, val makeLayoutParams: () -> ViewGroup.LayoutParams) {
 
     var defaultAnimation: AnimationSet? = AnimationSet.fade
 
     var wholeViewAnimatingIn: Boolean = false
     var killViewAnimateOutCalled: Boolean = false
-
-    val vcContext: VCContext get() = root.getActivity() as? VCActivity ?: throw IllegalArgumentException("Root view must belong to a VCActivity")
 
     var current: ViewController? = null
     var currentView: View? = null
