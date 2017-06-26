@@ -61,7 +61,7 @@ class StackDemoVC(val stack: VCStack, val depth: Int = 1) : AnkoViewController()
 
         button("Go deeper") {
             styleDefault()
-            onClick {
+            setOnClickListener {
                 //This pushes a new view controller onto the stack.
                 stack.push(StackDemoVC(stack, depth + 1))
             }
@@ -69,7 +69,7 @@ class StackDemoVC(val stack: VCStack, val depth: Int = 1) : AnkoViewController()
 
         button("Go back") {
             styleDefault()
-            onClick {
+            setOnClickListener {
                 //This removes a view controller from the stack, going back to the previous view controller.
                 stack.pop()
             }

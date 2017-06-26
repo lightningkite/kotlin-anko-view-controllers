@@ -29,7 +29,7 @@ class VCContainerEmbedder(val vcContext: VCContext, val root: ViewGroup, val con
         val newView = new.make(vcContext)
 //                .apply {
 //                    if (this !is AbsListView) {
-//                        onClick { }
+//                        setOnClickListener { }
 //                    }
 //                }
         root.addView(newView, makeLayoutParams())
