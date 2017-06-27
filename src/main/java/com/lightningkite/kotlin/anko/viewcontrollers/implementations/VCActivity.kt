@@ -90,7 +90,7 @@ abstract class VCActivity : Activity(), VCContext {
         val returns: HashMap<Int, (Int, Intent?) -> Unit> = HashMap()
     }
 
-    val onActivityResult = ArrayList<(Int, Int, Intent?) -> Unit>()
+    override val onActivityResult = ArrayList<(Int, Int, Intent?) -> Unit>()
 
     override fun prepareOnResult(presetCode: Int, onResult: (Int, Intent?) -> Unit): Int {
         returns[presetCode] = onResult
