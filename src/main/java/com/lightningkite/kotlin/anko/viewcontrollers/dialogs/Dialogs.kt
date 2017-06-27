@@ -168,7 +168,7 @@ fun Context.standardDialog(
                     for ((buttonName, action) in buttons) {
                         button(buttonName) {
                             styleNormal()
-                            onClick {
+                            setOnClickListener {
                                 action(vcStack)
                             }
                         }.lparams(wrapContent, wrapContent) {
@@ -236,7 +236,7 @@ fun Context.customDialog(
                     gravity = Gravity.END
                     buttons.forEach { triple ->
                         button(triple.first) {
-                            onClick { triple.second(vcStack) }
+                            setOnClickListener { triple.second(vcStack) }
                             triple.third.invoke(this)
                         }.lparams {
                             standardMargins(context)
