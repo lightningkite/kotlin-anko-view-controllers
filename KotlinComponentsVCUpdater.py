@@ -14,7 +14,12 @@ kt_plain_replacements = [
 	("AnkoContext<VCActivity>", "AnkoContext<VCContext>"),
 	("import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCActivity", "import com.lightningkite.kotlin.anko.viewcontrollers.VCContext"),
 	("viewContainer(", "viewContainer(ui.owner, "),
+	("viewController(", "viewController(ui.owner, "),
+	("embedViewContainer(", "embedViewContainer(ui.owner, "),
 	("ui.owner.resources", "ui.ctx.resources"),
+	("ui.owner.contentResolver", "ui.ctx.contentResolver"),
+	("ui.owner.browse", "ui.ctx.browse"),
+	("ui.owner.email", "ui.ctx.email"),
 	("ui.owner.defaultSharedPreferences", "ui.ctx.defaultSharedPreferences"),
 	("ui.owner.infoDialog", "ui.ctx.infoDialog"),
 	("ui.owner.dialog", "ui.ctx.dialog"),
@@ -24,10 +29,10 @@ kt_plain_replacements = [
 	("ui.owner.timePicker", "ui.ctx.timePicker"),
 	("ui.owner.datePicker", "ui.ctx.datePicker"),
 	("ui.owner.selector", "ui.ctx.selector"),
-	(":VCActivity", ":VCActivity/*TODO: Don't refer to VCActivity directly*/"),
-	(": VCActivity", ": VCActivity/*TODO: Don't refer to VCActivity directly*/"),
-	("as VCActivity", "as VCActivity/*TODO: Don't refer to VCActivity directly*/"),
-	("as? VCActivity", "as? VCActivity/*TODO: Don't refer to VCActivity directly*/")
+	(":VCActivity", ":VCContext"),
+	(": VCActivity", ": VCContext"),
+	("as VCActivity", "as VCContext"),
+	("as? VCActivity", "as? VCContext")
 ]
 
 def do_replace_kt(text):
