@@ -9,6 +9,7 @@ import com.lightningkite.kotlin.Disposable
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
 import com.lightningkite.kotlin.anko.viewcontrollers.implementations.ContainerVC
 import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCContainerEmbedder
+import com.lightningkite.kotlin.invokeAll
 import com.lightningkite.kotlin.lifecycle.LifecycleConnectable
 import com.lightningkite.kotlin.lifecycle.LifecycleListener
 import com.lightningkite.kotlin.runAll
@@ -98,7 +99,7 @@ abstract class CallbackViewController() : ViewController {
     }
 
     override fun dispose() {
-        onDispose.runAll()
+        onDispose.invokeAll()
         onDispose.clear()
         super.dispose()
     }
