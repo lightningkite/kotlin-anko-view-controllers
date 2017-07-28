@@ -5,13 +5,13 @@ import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import java.util.*
 
 /**
- * A stack of [ViewController]s.  You can [push] and [pop] them, among other things.
- * Any controllers popped off the stack are disposed.
  *
- * Created by jivie on 10/12/15.
+ * Created by shanethompson on 7/21/17.
+ *
  */
-open class VCStack() : VCContainerImpl(), VCStackInterface {
-    override val current: ViewController get() = internalStack.peek()
+
+class TypedVCStack<T : ViewController> : VCContainerImpl() {
+    override val current: T get() = internalStack.peek()
 
     /**
      * Gets the view controller that is [index] pops back.
@@ -19,28 +19,28 @@ open class VCStack() : VCContainerImpl(), VCStackInterface {
      * 1 = the next view controller if pop() is called
      * size - 1 = the view controller at the bottom of the stack
      */
-    operator fun get(index: Int): ViewController {
+    operator fun get(index: Int): T {
         return internalStack[internalStack.size - 1 - index]
     }
 
-    override var defaultPushAnimation: AnimationSet = AnimationSet.slidePush
-    override var defaultPopAnimation: AnimationSet = AnimationSet.slidePop
-    override var defaultSwapAnimation: AnimationSet = AnimationSet.fade
+    var defaultPushAnimation: AnimationSet = AnimationSet.slidePush
+    var defaultPopAnimation: AnimationSet = AnimationSet.slidePop
+    var defaultSwapAnimation: AnimationSet = AnimationSet.fade
 
     val size: Int get() = internalStack.size
     val isEmpty: Boolean get() = internalStack.isEmpty()
     var onEmptyListener: () -> Unit = {}
 
 
-    var stack: Stack<ViewController>
+    var stack: Stack<T>
         get() = internalStack
         set(value) = setStack(value)
-    private var internalStack: Stack<ViewController> = Stack()
+    private var internalStack: Stack<T> = Stack()
 
     /**
      * Sets the stack and updates the view.
      */
-    override fun setStack(newStack: Stack<ViewController>, animationSet: AnimationSet?): Unit {
+    fun setStack(newStack: Stack<T>, animationSet: AnimationSet? = defaultPushAnimation): Unit {
         val toDispose = internalStack.filter { !newStack.contains(it) }
         internalStack = newStack
         swapListener?.invoke(current, animationSet) {
@@ -55,7 +55,7 @@ open class VCStack() : VCContainerImpl(), VCStackInterface {
     /**
      * Pushes a new controllers onto the stack.
      */
-    override fun push(viewController: ViewController, animationSet: AnimationSet?) {
+    fun push(viewController: T, animationSet: AnimationSet? = defaultPushAnimation) {
         internalStack.push(viewController)
         swapListener?.invoke(current, animationSet) {}
         onSwap.forEach { it(current) }
@@ -64,7 +64,7 @@ open class VCStack() : VCContainerImpl(), VCStackInterface {
     /**
      * Removes the top controllers off the stack.
      */
-    override fun pop(animationSet: AnimationSet?) {
+    fun pop(animationSet: AnimationSet? = defaultPopAnimation) {
         if (internalStack.size <= 1) {
             onEmptyListener()
         } else {
@@ -79,8 +79,8 @@ open class VCStack() : VCContainerImpl(), VCStackInterface {
     /**
      * Pops all of the controllers except fo the first one.
      */
-    override fun root(animationSet: AnimationSet?) {
-        val toDispose = ArrayList<ViewController>(internalStack)
+    fun root(animationSet: AnimationSet? = defaultPopAnimation) {
+        val toDispose = ArrayList<T>(internalStack)
         val root = toDispose.removeAt(0)
         while (stack.isNotEmpty()) {
             stack.pop()
@@ -97,8 +97,8 @@ open class VCStack() : VCContainerImpl(), VCStackInterface {
     /**
      * Pops controllers off the stack until [predicate] returns true.
      */
-    override fun back(predicate: (ViewController) -> Boolean, animationSet: AnimationSet?) {
-        val toDispose = ArrayList<ViewController>()
+    fun back(predicate: (T) -> Boolean, animationSet: AnimationSet? = defaultPopAnimation) {
+        val toDispose = ArrayList<T>()
         while (!predicate(internalStack.peek())) {
             toDispose.add(internalStack.pop())
             if (internalStack.size == 0) throw IllegalArgumentException("There is no view controller that matches this predicate!")
@@ -114,7 +114,7 @@ open class VCStack() : VCContainerImpl(), VCStackInterface {
     /**
      * Swaps the top controller with another one.
      */
-    override fun swap(viewController: ViewController, animationSet: AnimationSet?) {
+    fun swap(viewController: T, animationSet: AnimationSet? = defaultSwapAnimation) {
         val toDispose = internalStack.pop()
         internalStack.push(viewController)
         swapListener?.invoke(current, animationSet) {
@@ -126,7 +126,7 @@ open class VCStack() : VCContainerImpl(), VCStackInterface {
     /**
      * Clears the stack and initiates the stack with a single controller.
      */
-    override fun reset(viewController: ViewController, animationSet: AnimationSet?) {
+    fun reset(viewController: T, animationSet: AnimationSet? = defaultPushAnimation) {
         val toDispose = ArrayList(internalStack)
         internalStack.clear()
         internalStack.push(viewController)
