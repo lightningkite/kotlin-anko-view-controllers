@@ -1,14 +1,16 @@
 package com.lightningkite.kotlin.anko.viewcontrollers.implementations
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import com.lightningkite.kotlin.anko.viewcontrollers.AnkoViewController
+import com.lightningkite.kotlin.anko.viewcontrollers.VCContext
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCStack
+import com.lightningkite.kotlin.anko.viewcontrollers.startIntent
 import org.jetbrains.anko.AnkoContext
 import java.util.*
 
@@ -73,11 +75,11 @@ class VCDialogActivity : VCActivity() {
     }
 }
 
-inline fun Activity.dialog(
+inline fun Context.dialog(
         dismissOnTouchOutside: Boolean = true,
         noinline windowModifier: Window.() -> Unit = {},
         noinline layoutParamModifier: WindowManager.LayoutParams.() -> Unit = {},
-        crossinline viewMaker: AnkoContext<VCActivity>.(VCStack) -> View
+        crossinline viewMaker: AnkoContext<VCContext>.(VCStack) -> View
 ) {
     viewControllerDialog(VCStack().apply {
         push(object : AnkoViewController() {
@@ -88,18 +90,18 @@ inline fun Activity.dialog(
                 }
             }
 
-            override fun createView(ui: AnkoContext<VCActivity>): View {
+            override fun createView(ui: AnkoContext<VCContext>): View {
                 return viewMaker(ui, this@apply)
             }
         })
     }, dismissOnTouchOutside, windowModifier = windowModifier, layoutParamModifier = layoutParamModifier)
 }
 
-inline fun Activity.dialog(
+inline fun Context.dialog(
         dismissOnTouchOutside: Boolean = true,
         noinline windowModifier: Window.() -> Unit = {},
         noinline layoutParamModifier: WindowManager.LayoutParams.() -> Unit = {},
-        crossinline viewMaker: AnkoViewController.(AnkoContext<VCActivity>, VCStack) -> View
+        crossinline viewMaker: AnkoViewController.(AnkoContext<VCContext>, VCStack) -> View
 ) {
     viewControllerDialog(VCStack().apply {
         push(object : AnkoViewController() {
@@ -109,18 +111,18 @@ inline fun Activity.dialog(
                 }
             }
 
-            override fun createView(ui: AnkoContext<VCActivity>): View {
+            override fun createView(ui: AnkoContext<VCContext>): View {
                 return viewMaker(ui, this@apply)
             }
         })
     }, dismissOnTouchOutside, windowModifier = windowModifier, layoutParamModifier = layoutParamModifier)
 }
 
-inline fun Activity.viewControllerDialog(vcMaker: (VCStack) -> ViewController, dismissOnTouchOutside: Boolean = true, noinline windowModifier: Window.() -> kotlin.Unit = {}, noinline layoutParamModifier: WindowManager.LayoutParams.() -> Unit = {}) {
+inline fun Context.viewControllerDialog(vcMaker: (VCStack) -> ViewController, dismissOnTouchOutside: Boolean = true, noinline windowModifier: Window.() -> kotlin.Unit = {}, noinline layoutParamModifier: WindowManager.LayoutParams.() -> Unit = {}) {
     viewControllerDialog(VCStack().apply { push(vcMaker(this)) }, dismissOnTouchOutside, windowModifier = windowModifier, layoutParamModifier = layoutParamModifier)
 }
 
-inline fun Activity.viewControllerDialog(container: VCStack, dismissOnTouchOutside: Boolean = true, noinline windowModifier: Window.() -> kotlin.Unit = {}, noinline layoutParamModifier: WindowManager.LayoutParams.() -> Unit = {}) {
+inline fun Context.viewControllerDialog(container: VCStack, dismissOnTouchOutside: Boolean = true, noinline windowModifier: Window.() -> kotlin.Unit = {}, noinline layoutParamModifier: WindowManager.LayoutParams.() -> Unit = {}) {
     val id: Int = container.hashCode()
     VCDialogActivity.containers[id] = VCDialogActivity.ContainerData(container, layoutParamModifier, windowModifier)
     startActivity(Intent(this, VCDialogActivity::class.java).apply {
@@ -129,13 +131,24 @@ inline fun Activity.viewControllerDialog(container: VCStack, dismissOnTouchOutsi
     })
 }
 
-inline fun VCActivity.viewControllerDialog(container: VCStack, noinline windowModifier: Window.() -> kotlin.Unit = {}, noinline layoutParamModifier: WindowManager.LayoutParams.() -> Unit = {}, crossinline onDismissed: () -> Unit) {
+inline fun VCContext.viewControllerDialog(container: VCStack, noinline windowModifier: Window.() -> kotlin.Unit = {}, noinline layoutParamModifier: WindowManager.LayoutParams.() -> Unit = {}, crossinline onDismissed: () -> Unit) {
     val id: Int = container.hashCode()
     VCDialogActivity.containers[id] = VCDialogActivity.ContainerData(container, layoutParamModifier, windowModifier)
     startIntent(
-            Intent(this, VCDialogActivity::class.java).apply {
+            Intent(context, VCDialogActivity::class.java).apply {
                 putExtra(VCDialogActivity.EXTRA_CONTAINER, id)
             },
             onResult = { code, data -> onDismissed() }
+    )
+}
+
+inline fun VCContext.viewControllerDialog(container: VCStack, noinline windowModifier: Window.() -> kotlin.Unit = {}, noinline layoutParamModifier: WindowManager.LayoutParams.() -> Unit = {}) {
+    val id: Int = container.hashCode()
+    VCDialogActivity.containers[id] = VCDialogActivity.ContainerData(container, layoutParamModifier, windowModifier)
+    startIntent(
+            Intent(context, VCDialogActivity::class.java).apply {
+                putExtra(VCDialogActivity.EXTRA_CONTAINER, id)
+            },
+            onResult = { code, data -> }
     )
 }

@@ -3,7 +3,7 @@ package com.lightningkite.kotlin.anko.viewcontrollers.implementations
 import android.view.View
 import android.view.ViewGroup
 import com.lightningkite.kotlin.anko.animation.AnimationSet
-import com.lightningkite.kotlin.anko.getActivity
+import com.lightningkite.kotlin.anko.viewcontrollers.VCContext
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
 
@@ -12,14 +12,12 @@ import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
  *
  * Created by joseph on 11/7/16.
  */
-class VCContainerEmbedder(val root: ViewGroup, val container: VCContainer, val makeLayoutParams: () -> ViewGroup.LayoutParams) {
+class VCContainerEmbedder(val vcContext: VCContext, val root: ViewGroup, val container: VCContainer, val makeLayoutParams: () -> ViewGroup.LayoutParams) {
 
     var defaultAnimation: AnimationSet? = AnimationSet.fade
 
     var wholeViewAnimatingIn: Boolean = false
     var killViewAnimateOutCalled: Boolean = false
-
-    val activity: VCActivity get() = root.getActivity() as? VCActivity ?: throw IllegalArgumentException("Root view must belong to a VCActivity")
 
     var current: ViewController? = null
     var currentView: View? = null
@@ -28,7 +26,7 @@ class VCContainerEmbedder(val root: ViewGroup, val container: VCContainer, val m
         val old = current
         val animation = preferredAnimation ?: defaultAnimation
         current = new
-        val newView = new.make(activity)
+        val newView = new.make(vcContext)
 //                .apply {
 //                    if (this !is AbsListView) {
 //                        onClick { }
@@ -38,14 +36,14 @@ class VCContainerEmbedder(val root: ViewGroup, val container: VCContainer, val m
         currentView = newView
         if (old != null && oldView != null) {
             if (animation == null) {
-                old.animateOutStart(activity, oldView)
+                old.animateOutStart(vcContext, oldView)
                 old.unmake(oldView)
                 root.removeView(oldView)
                 onFinish()
-                new.animateInComplete(activity, newView)
+                new.animateInComplete(vcContext, newView)
             } else {
                 val animateOut = animation.animateOut
-                old.animateOutStart(activity, oldView)
+                old.animateOutStart(vcContext, oldView)
                 oldView.animateOut(root).withEndAction {
                     old.unmake(oldView)
                     root.removeView(oldView)
@@ -53,12 +51,12 @@ class VCContainerEmbedder(val root: ViewGroup, val container: VCContainer, val m
                 }.start()
                 val animateIn = animation.animateIn
                 newView.animateIn(root).withEndAction {
-                    new.animateInComplete(activity, newView)
+                    new.animateInComplete(vcContext, newView)
                 }.start()
             }
         } else {
             if (!wholeViewAnimatingIn) {
-                new.animateInComplete(activity, newView)
+                new.animateInComplete(vcContext, newView)
             }
         }
         killViewAnimateOutCalled = false
@@ -69,18 +67,18 @@ class VCContainerEmbedder(val root: ViewGroup, val container: VCContainer, val m
         swap(container.current, null) {}
     }
 
-    fun animateInComplete(activity: VCActivity, view: View) {
-        current?.animateInComplete(activity, currentView!!)
+    fun animateInComplete(vcContext: VCContext, view: View) {
+        current?.animateInComplete(vcContext, currentView!!)
     }
 
-    fun animateOutStart(activity: VCActivity, view: View) {
+    fun animateOutStart(vcContext: VCContext, view: View) {
         killViewAnimateOutCalled = true
-        current?.animateOutStart(activity, currentView!!)
+        current?.animateOutStart(vcContext, currentView!!)
     }
 
     fun unmake() {
         if (!killViewAnimateOutCalled) {
-            current?.animateOutStart(activity, currentView!!)
+            current?.animateOutStart(vcContext, currentView!!)
             killViewAnimateOutCalled = true
         }
         current?.unmake(currentView!!)

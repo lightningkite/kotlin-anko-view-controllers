@@ -2,6 +2,7 @@ package com.lightningkite.kotlin.anko.viewcontrollers.implementations
 
 import android.annotation.TargetApi
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -10,8 +11,10 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.view.View
 import com.lightningkite.kotlin.anko.async.AndroidAsync
+import com.lightningkite.kotlin.anko.viewcontrollers.VCContext
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
+import com.lightningkite.kotlin.invokeAll
 import com.lightningkite.kotlin.runAll
 import java.util.*
 
@@ -21,7 +24,12 @@ import java.util.*
  * [VCContainer], and use the back button on the [VCContainer].
  * Created by jivie on 10/12/15.
  */
-abstract class VCActivity : Activity() {
+abstract class VCActivity : Activity(), VCContext {
+
+    override val activity: Activity?
+        get() = this
+    override val context: Context
+        get() = this
 
     abstract val viewController: ViewController
 
@@ -37,28 +45,28 @@ abstract class VCActivity : Activity() {
         setContentView(vcView!!)
     }
 
-    val onResume = HashSet<() -> Unit>()
+    override val onResume = HashSet<() -> Unit>()
     override fun onResume() {
         super.onResume()
-        onResume.runAll()
+        onResume.invokeAll()
     }
 
-    val onPause = HashSet<() -> Unit>()
+    override val onPause = HashSet<() -> Unit>()
     override fun onPause() {
-        onPause.runAll()
+        onPause.invokeAll()
         super.onPause()
     }
 
-    val onSaveInstanceState = HashSet<(outState: Bundle) -> Unit>()
+    override val onSaveInstanceState = HashSet<(outState: Bundle) -> Unit>()
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         onSaveInstanceState.runAll(outState)
     }
 
-    val onLowMemory = HashSet<() -> Unit>()
+    override val onLowMemory = HashSet<() -> Unit>()
     override fun onLowMemory() {
         super.onLowMemory()
-        onLowMemory.runAll()
+        onLowMemory.invokeAll()
     }
 
     override fun onBackPressed() {
@@ -67,13 +75,13 @@ abstract class VCActivity : Activity() {
         }
     }
 
-    val onDestroy = HashSet<() -> Unit>()
+    override val onDestroy = HashSet<() -> Unit>()
     override fun onDestroy() {
         if (vcView != null) {
             viewController.unmake(vcView!!)
             vcView = null
         }
-        onDestroy.runAll()
+        onDestroy.invokeAll()
         super.onDestroy()
     }
 
@@ -83,23 +91,11 @@ abstract class VCActivity : Activity() {
         val returns: HashMap<Int, (Int, Intent?) -> Unit> = HashMap()
     }
 
-    val onActivityResult = ArrayList<(Int, Int, Intent?) -> Unit>()
+    override val onActivityResult = ArrayList<(Int, Int, Intent?) -> Unit>()
 
-    fun prepareOnResult(onResult: (Int, Intent?) -> Unit = { a, b -> }): Int {
-        val generated: Int = (Math.random() * Int.MAX_VALUE).toInt()
-        returns[generated] = onResult
-        return generated
-    }
-
-    fun prepareOnResult(presetCode: Int, onResult: (Int, Intent?) -> Unit = { a, b -> }): Int {
+    override fun prepareOnResult(presetCode: Int, onResult: (Int, Intent?) -> Unit): Int {
         returns[presetCode] = onResult
         return presetCode
-    }
-
-    fun startIntent(intent: Intent, options: Bundle = Bundle.EMPTY, onResult: (Int, Intent?) -> Unit = { a, b -> }) {
-        val generated: Int = (Math.random() * Int.MAX_VALUE).toInt()
-        returns[generated] = onResult
-        startActivityForResult(intent, generated, options)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -111,7 +107,7 @@ abstract class VCActivity : Activity() {
     /**
      * Requests a bunch of permissions and returns a map of permissions that were previously ungranted and their new status.
      */
-    fun requestPermissions(permission: Array<String>, onResult: (Map<String, Int>) -> Unit) {
+    override fun requestPermissions(permission: Array<String>, onResult: (Map<String, Int>) -> Unit) {
         val ungranted = permission.filter {
             ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
         }
@@ -131,7 +127,7 @@ abstract class VCActivity : Activity() {
     /**
      * Requests a single permissions and returns whether it was granted or not.
      */
-    fun requestPermission(permission: String, onResult: (Boolean) -> Unit) {
+    override fun requestPermission(permission: String, onResult: (Boolean) -> Unit) {
         if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
 
             val generated: Int = (Math.random() * Int.MAX_VALUE).toInt()

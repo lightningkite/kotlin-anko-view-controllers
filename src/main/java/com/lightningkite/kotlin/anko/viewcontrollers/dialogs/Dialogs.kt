@@ -1,7 +1,6 @@
 package com.lightningkite.kotlin.anko.viewcontrollers.dialogs
 
 import android.R
-import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
@@ -94,7 +93,7 @@ object StandardDialog {
     }
 }
 
-fun Activity.alertDialog(message: Int) = standardDialog(
+fun Context.alertDialog(message: Int) = standardDialog(
         null,
         resources.getString(message),
         listOf(StandardDialog.okButton(resources) {}),
@@ -102,7 +101,7 @@ fun Activity.alertDialog(message: Int) = standardDialog(
         null
 )
 
-fun Activity.standardDialog(
+fun Context.standardDialog(
         title: Int?,
         message: Int?,
         buttons: List<Pair<String, (VCStack) -> Unit>>,
@@ -127,7 +126,7 @@ object CustomDialog {
 /**
  * Creates a psuedo-dialog that is actually an activity.  Significantly more stable and safe.
  */
-fun Activity.standardDialog(
+fun Context.standardDialog(
         title: String?,
         message: String?,
         buttons: List<Pair<String, (VCStack) -> Unit>>,
@@ -169,7 +168,7 @@ fun Activity.standardDialog(
                     for ((buttonName, action) in buttons) {
                         button(buttonName) {
                             styleNormal()
-                            onClick {
+                            setOnClickListener {
                                 action(vcStack)
                             }
                         }.lparams(wrapContent, wrapContent) {
@@ -182,7 +181,7 @@ fun Activity.standardDialog(
     }
 }
 
-fun Activity.customDialog(
+fun Context.customDialog(
         title: Int?,
         message: Int,
         buttons: List<Triple<String, (VCStack) -> Unit, (Button) -> Unit>>,
@@ -199,7 +198,7 @@ fun Activity.customDialog(
 /**
  * Creates a psuedo-dialog that is actually an activity.  Significantly more stable and safe.
  */
-fun Activity.customDialog(
+fun Context.customDialog(
         title: String?,
         message: String,
         buttons: List<Triple<String, (VCStack) -> Unit, (Button) -> Unit>>,
@@ -237,7 +236,7 @@ fun Activity.customDialog(
                     gravity = Gravity.END
                     buttons.forEach { triple ->
                         button(triple.first) {
-                            onClick { triple.second(vcStack) }
+                            setOnClickListener { triple.second(vcStack) }
                             triple.third.invoke(this)
                         }.lparams {
                             standardMargins(context)
@@ -249,15 +248,15 @@ fun Activity.customDialog(
     }
 }
 
-fun Activity.confirmationDialog(title: Int? = null, message: Int, onCancel: () -> Unit = {}, onConfirm: () -> Unit) {
+fun Context.confirmationDialog(title: Int? = null, message: Int, onCancel: () -> Unit = {}, onConfirm: () -> Unit) {
     return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm), StandardDialog.cancelButton(resources, action = onCancel)))
 }
 
-fun Activity.confirmationDialog(title: String? = null, message: String, onCancel: () -> Unit = {}, onConfirm: () -> Unit) {
+fun Context.confirmationDialog(title: String? = null, message: String, onCancel: () -> Unit = {}, onConfirm: () -> Unit) {
     return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm), StandardDialog.cancelButton(resources, action = onCancel)))
 }
 
-fun Activity.confirmationDialog(title: String? = null, message: String, okResource: Int = R.string.ok, cancelResource: Int = R.string.cancel, dismissOnClickOutside: Boolean = true, onPositiveAction: () -> Unit, onNegativeAction: () -> Unit) {
+fun Context.confirmationDialog(title: String? = null, message: String, okResource: Int = R.string.ok, cancelResource: Int = R.string.cancel, dismissOnClickOutside: Boolean = true, onPositiveAction: () -> Unit, onNegativeAction: () -> Unit) {
     return standardDialog(
             title,
             message,
@@ -265,7 +264,7 @@ fun Activity.confirmationDialog(title: String? = null, message: String, okResour
             dismissOnClickOutside = dismissOnClickOutside)
 }
 
-fun Activity.confirmationDialog(title: Int? = null, message: Int, okResource: Int = R.string.ok, cancelResource: Int = R.string.cancel, dismissOnClickOutside: Boolean = true, onPositiveAction: () -> Unit, onNegativeAction: () -> Unit) {
+fun Context.confirmationDialog(title: Int? = null, message: Int, okResource: Int = R.string.ok, cancelResource: Int = R.string.cancel, dismissOnClickOutside: Boolean = true, onPositiveAction: () -> Unit, onNegativeAction: () -> Unit) {
     return standardDialog(
             title,
             message,
@@ -273,7 +272,7 @@ fun Activity.confirmationDialog(title: Int? = null, message: Int, okResource: In
             dismissOnClickOutside = dismissOnClickOutside)
 }
 
-fun Activity.customConfirmationDialog(title: Int? = null, message: Int, okResource: Int = R.string.ok, cancelResource: Int = R.string.cancel, dismissOnClickOutside: Boolean = true, onPositiveAction: () -> Unit, onNegativeAction: () -> Unit, okStyle: Button.() -> Unit, cancelStyle: Button.() -> Unit) {
+fun Context.customConfirmationDialog(title: Int? = null, message: Int, okResource: Int = R.string.ok, cancelResource: Int = R.string.cancel, dismissOnClickOutside: Boolean = true, onPositiveAction: () -> Unit, onNegativeAction: () -> Unit, okStyle: Button.() -> Unit, cancelStyle: Button.() -> Unit) {
     return customDialog(
             title,
             message,
@@ -282,11 +281,11 @@ fun Activity.customConfirmationDialog(title: Int? = null, message: Int, okResour
     )
 }
 
-fun Activity.infoDialog(title: Int? = null, message: Int, content: (ViewGroup.(VCStack) -> View)? = null, onConfirm: () -> Unit = {}) {
+fun Context.infoDialog(title: Int? = null, message: Int, content: (ViewGroup.(VCStack) -> View)? = null, onConfirm: () -> Unit = {}) {
     return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm)), content = content)
 }
 
-fun Activity.infoDialog(title: String? = null, message: String, content: (ViewGroup.(VCStack) -> View)? = null, onConfirm: () -> Unit = {}) {
+fun Context.infoDialog(title: String? = null, message: String, content: (ViewGroup.(VCStack) -> View)? = null, onConfirm: () -> Unit = {}) {
     return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm)), content = content)
 }
 
@@ -294,7 +293,7 @@ fun Activity.infoDialog(title: String? = null, message: String, content: (ViewGr
 /**
  * Creates a dialog with an input text field on it.
  */
-fun Activity.inputDialog(
+fun Context.inputDialog(
         title: Int,
         message: Int,
         hint: Int = 0,
@@ -320,7 +319,7 @@ fun Activity.inputDialog(
 /**
  * Creates a dialog with an input text field on it.
  */
-fun Activity.inputDialog(
+fun Context.inputDialog(
         title: String,
         message: String,
         hint: String = "",

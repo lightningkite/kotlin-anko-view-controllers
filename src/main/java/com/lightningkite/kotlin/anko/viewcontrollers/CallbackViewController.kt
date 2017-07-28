@@ -8,8 +8,8 @@ import android.widget.FrameLayout
 import com.lightningkite.kotlin.Disposable
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
 import com.lightningkite.kotlin.anko.viewcontrollers.implementations.ContainerVC
-import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCActivity
 import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCContainerEmbedder
+import com.lightningkite.kotlin.invokeAll
 import com.lightningkite.kotlin.lifecycle.LifecycleConnectable
 import com.lightningkite.kotlin.lifecycle.LifecycleListener
 import com.lightningkite.kotlin.runAll
@@ -30,8 +30,8 @@ import java.util.*
 abstract class CallbackViewController() : ViewController {
 
     val onMake: ArrayList<(View) -> Unit> = ArrayList()
-    val onAnimateInComplete: ArrayList<(VCActivity, View) -> Unit> = ArrayList()
-    val onAnimateOutStart: ArrayList<(VCActivity, View) -> Unit> = ArrayList()
+    val onAnimateInComplete: ArrayList<(VCContext, View) -> Unit> = ArrayList()
+    val onAnimateOutStart: ArrayList<(VCContext, View) -> Unit> = ArrayList()
     val onUnmake: ArrayList<(View) -> Unit> = ArrayList()
     val onDispose: ArrayList<() -> Unit> = ArrayList()
 
@@ -84,9 +84,9 @@ abstract class CallbackViewController() : ViewController {
         return item
     }
 
-    abstract fun makeView(activity: VCActivity): View
-    final override fun make(activity: VCActivity): View {
-        val view = makeView(activity)
+    abstract fun makeView(vcContext: VCContext): View
+    final override fun make(vcContext: VCContext): View {
+        val view = makeView(vcContext)
         onMake.runAll(view)
         onMake.clear()
         return view
@@ -99,21 +99,21 @@ abstract class CallbackViewController() : ViewController {
     }
 
     override fun dispose() {
-        onDispose.runAll()
+        onDispose.invokeAll()
         onDispose.clear()
         super.dispose()
     }
 
-    override fun animateInComplete(activity: VCActivity, view: View) {
-        onAnimateInComplete.runAll(activity, view)
+    override fun animateInComplete(vcContext: VCContext, view: View) {
+        onAnimateInComplete.runAll(vcContext, view)
         onAnimateInComplete.clear()
-        super.animateInComplete(activity, view)
+        super.animateInComplete(vcContext, view)
     }
 
-    override fun animateOutStart(activity: VCActivity, view: View) {
-        onAnimateOutStart.runAll(activity, view)
+    override fun animateOutStart(vcContext: VCContext, view: View) {
+        onAnimateOutStart.runAll(vcContext, view)
         onAnimateOutStart.clear()
-        super.animateOutStart(activity, view)
+        super.animateOutStart(vcContext, view)
     }
 
     fun <T : Disposable> autoDispose(disposable: T): T {
@@ -121,27 +121,26 @@ abstract class CallbackViewController() : ViewController {
         return disposable
     }
 
-
     /**
      * Creates a view that shows whatever is in the view container, transitioning between view controllers as needed.
      */
-    inline fun AnkoContext<*>.viewContainer(container: VCContainer): View {
-        return viewController(ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), {})
+    fun ViewGroup.viewContainer(vcContext: VCContext, container: VCContainer): View {
+        return viewController(vcContext, ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), {})
     }
 
     /**
      * Creates a view that shows whatever is in the view container, transitioning between view controllers as needed.
      */
-    inline fun AnkoContext<*>.viewContainer(container: VCContainer, init: View.() -> Unit): View {
-        return viewController(ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), init)
+    inline fun ViewGroup.viewContainer(vcContext: VCContext, container: VCContainer, init: View.() -> Unit): View {
+        return viewController(vcContext, ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), init)
     }
 
     /**
      * Creates a view that shows a single [ViewController].
      */
-    inline fun AnkoContext<*>.viewController(controller: ViewController, init: View.() -> Unit): View {
-        val view = controller.make(ctx as VCActivity)
-        addView(view, ViewGroup.LayoutParams(matchParent, matchParent))
+    inline fun ViewGroup.viewController(vcContext: VCContext, controller: ViewController, init: View.() -> Unit): View {
+        val view = controller.make(vcContext)
+        addView(view)
         view.init()
         onAnimateInComplete.add { activity, view ->
             controller.animateInComplete(activity, view)
@@ -158,23 +157,23 @@ abstract class CallbackViewController() : ViewController {
     /**
      * Creates a view that shows whatever is in the view container, transitioning between view controllers as needed.
      */
-    inline fun ViewGroup.viewContainer(container: VCContainer): View {
-        return viewController(ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), {})
+    fun AnkoContext<*>.viewContainer(vcContext: VCContext, container: VCContainer): View {
+        return viewController(vcContext, ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), {})
     }
 
     /**
      * Creates a view that shows whatever is in the view container, transitioning between view controllers as needed.
      */
-    inline fun ViewGroup.viewContainer(container: VCContainer, init: View.() -> Unit): View {
-        return viewController(ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), init)
+    inline fun AnkoContext<*>.viewContainer(vcContext: VCContext, container: VCContainer, init: View.() -> Unit): View {
+        return viewController(vcContext, ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), init)
     }
 
     /**
      * Creates a view that shows a single [ViewController].
      */
-    inline fun ViewGroup.viewController(controller: ViewController, init: View.() -> Unit): View {
-        val view = controller.make(context as VCActivity)
-        addView(view)
+    inline fun AnkoContext<*>.viewController(vcContext: VCContext, controller: ViewController, init: View.() -> Unit): View {
+        val view = controller.make(vcContext)
+        addView(view, ViewGroup.LayoutParams(matchParent, matchParent))
         view.init()
         onAnimateInComplete.add { activity, view ->
             controller.animateInComplete(activity, view)
@@ -191,8 +190,8 @@ abstract class CallbackViewController() : ViewController {
     /**
      * Embeds the views generated by view controllers within [container] in the receiver view, animating them in and out as needed.
      */
-    fun <ROOT : ViewGroup> ROOT.embedViewContainer(container: VCContainer, makeLayoutParams: () -> ViewGroup.LayoutParams) {
-        val embedder = VCContainerEmbedder(this@embedViewContainer, container, makeLayoutParams)
+    fun <ROOT : ViewGroup> ROOT.embedViewContainer(vcContext: VCContext, container: VCContainer, makeLayoutParams: () -> ViewGroup.LayoutParams) {
+        val embedder = VCContainerEmbedder(vcContext, this@embedViewContainer, container, makeLayoutParams)
         onAnimateInComplete += { a, b -> embedder.animateInComplete(a, b) }
         onAnimateOutStart += { a, b -> embedder.animateOutStart(a, b) }
         onUnmake += { embedder.unmake() }

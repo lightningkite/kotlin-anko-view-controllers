@@ -3,7 +3,6 @@ package com.lightningkite.kotlin.anko.viewcontrollers;
 import android.content.res.Resources
 import android.view.View
 import com.lightningkite.kotlin.Disposable
-import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCActivity
 
 /**
  * An object that manages a view.
@@ -16,24 +15,24 @@ interface ViewController : Disposable {
      * An empty/dummy view controller.
      */
     object EMPTY : ViewController {
-        override fun make(activity: VCActivity): View = View(activity)
+        override fun make(vcContext: VCContext): View = View(vcContext.context)
     }
 
     /**
      * Makes a view that displays the information within this controller.
      */
-    fun make(activity: VCActivity): View
+    fun make(vcContext: VCContext): View
 
     /**
      * Called when the view is fully animated in.
      */
-    fun animateInComplete(activity: VCActivity, view: View) {
+    fun animateInComplete(vcContext: VCContext, view: View) {
     }
 
     /**
      * Called when the view is fully animated in.
      */
-    fun animateOutStart(activity: VCActivity, view: View) {
+    fun animateOutStart(vcContext: VCContext, view: View) {
     }
 
     /**

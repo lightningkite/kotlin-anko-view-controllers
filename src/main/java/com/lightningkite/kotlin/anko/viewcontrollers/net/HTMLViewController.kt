@@ -2,7 +2,7 @@ package com.lightningkite.kotlin.anko.viewcontrollers.net
 
 import android.view.View
 import com.lightningkite.kotlin.anko.viewcontrollers.AnkoViewController
-import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCActivity
+import com.lightningkite.kotlin.anko.viewcontrollers.VCContext
 import org.jetbrains.anko.*
 
 /**
@@ -11,7 +11,7 @@ import org.jetbrains.anko.*
  * Created by joseph on 8/4/16.
  */
 class HTMLViewController(val title: String?, val html: String) : AnkoViewController() {
-    override fun createView(ui: AnkoContext<VCActivity>): View = ui.verticalLayout {
+    override fun createView(ui: AnkoContext<VCContext>): View = ui.verticalLayout {
         if (title != null) {
             textView(text = title) {
                 padding = dip(8)
