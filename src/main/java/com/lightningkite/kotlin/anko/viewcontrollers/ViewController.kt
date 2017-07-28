@@ -62,6 +62,21 @@ interface ViewController : Disposable {
      * }
      * @param backAction Execute this function to do the parent's onBackPressed.
      */
+    fun onBackPressed(view: View, backAction: () -> Unit) = onBackPressed(backAction)
+
+
+    /**
+     * Called when back is pressed.
+     * Example usage:
+     * override fun onBackPressed(backAction:()->Unit){
+     *      if(canGoBack) backAction()
+     *      else informUserWhy()
+     * }
+     * @deprecated Override the full version instead.
+     * @param backAction Execute this function to do the parent's onBackPressed.
+     */
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated("Override the full onBackPressed() instead.")
     fun onBackPressed(backAction: () -> Unit) {
         backAction()
     }

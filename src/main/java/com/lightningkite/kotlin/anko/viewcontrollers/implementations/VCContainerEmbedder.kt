@@ -89,4 +89,9 @@ class VCContainerEmbedder(val vcContext: VCContext, val root: ViewGroup, val con
         currentView = null
     }
 
+    fun onBackPressed(backAction: () -> Unit) {
+        current!!.onBackPressed(currentView!!) {
+            container.onBackPressed(backAction)
+        }
+    }
 }

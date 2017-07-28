@@ -140,16 +140,10 @@ open class VCStack() : VCContainerImpl() {
      * Pops a controller off the stack if available; otherwise it calls onEmptyListener.
      */
     override fun onBackPressed(backAction: () -> Unit) {
-        if (internalStack.size == 0) {
-            backAction()
-        } else if (internalStack.size == 1) {
-            current.onBackPressed {
+        if (internalStack.size <= 1) {
                 backAction()
-            }
         } else {
-            current.onBackPressed {
                 pop()
-            }
         }
     }
 
