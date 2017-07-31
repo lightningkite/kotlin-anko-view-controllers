@@ -87,13 +87,13 @@ abstract class CallbackViewController() : ViewController {
     abstract fun makeView(vcContext: VCContext): View
     final override fun make(vcContext: VCContext): View {
         val view = makeView(vcContext)
-        onMake.runAll(view)
+        onMake.invokeAll(view)
         onMake.clear()
         return view
     }
 
     override fun unmake(view: View) {
-        onUnmake.runAll(view)
+        onUnmake.invokeAll(view)
         onUnmake.clear()
         super.unmake(view)
     }

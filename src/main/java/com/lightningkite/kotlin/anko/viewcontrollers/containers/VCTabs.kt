@@ -2,7 +2,7 @@ package com.lightningkite.kotlin.anko.viewcontrollers.containers
 
 import com.lightningkite.kotlin.anko.animation.AnimationSet
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
-import com.lightningkite.kotlin.runAll
+import com.lightningkite.kotlin.invokeAll
 import java.util.*
 
 /**
@@ -21,7 +21,7 @@ class VCTabs(startIndex: Int, vcs: List<ViewController>) : VCContainerImpl() {
         set(value) {
             if (value == field) return
             field = value
-            onIndexChange.runAll(value)
+            onIndexChange.invokeAll(value)
         }
 
     override val current: ViewController get() = viewControllers[index]

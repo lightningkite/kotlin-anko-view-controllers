@@ -60,7 +60,7 @@ abstract class VCActivity : Activity(), VCContext {
     override val onSaveInstanceState = HashSet<(outState: Bundle) -> Unit>()
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        onSaveInstanceState.runAll(outState)
+        onSaveInstanceState.invokeAll(outState)
     }
 
     override val onLowMemory = HashSet<() -> Unit>()
