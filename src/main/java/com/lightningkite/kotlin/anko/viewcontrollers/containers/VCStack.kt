@@ -10,7 +10,7 @@ import java.util.*
  *
  * Created by jivie on 10/12/15.
  */
-open class VCStack() : VCContainerImpl(), VCStackInterface {
+open class VCStack() : VCContainerImpl(), VCStackInterface<ViewController> {
     override val current: ViewController get() = internalStack.peek()
 
     /**

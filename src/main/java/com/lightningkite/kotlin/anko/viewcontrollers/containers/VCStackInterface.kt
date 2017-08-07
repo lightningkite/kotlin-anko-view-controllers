@@ -10,7 +10,7 @@ import java.util.*
  *
  */
 
-interface VCStackInterface : VCContainer {
+interface VCStackInterface<T : ViewController> : VCContainer {
 
     var defaultPushAnimation: AnimationSet
     var defaultPopAnimation: AnimationSet
@@ -19,12 +19,12 @@ interface VCStackInterface : VCContainer {
     /**
      * Set the stack and update the view.
      */
-    fun setStack(newStack: Stack<ViewController>, animationSet: AnimationSet? = defaultPushAnimation)
+    fun setStack(newStack: Stack<T>, animationSet: AnimationSet? = defaultPushAnimation)
 
     /**
      * Push a new controllers onto the stack.
      */
-    fun push(viewController: ViewController, animationSet: AnimationSet? = defaultPushAnimation)
+    fun push(viewController: T, animationSet: AnimationSet? = defaultPushAnimation)
     /**
      * Remove the top controllers off the stack.
      */
@@ -37,15 +37,15 @@ interface VCStackInterface : VCContainer {
     /**
      * Pop controllers off the stack until [predicate] returns true.
      */
-    fun back(predicate: (ViewController) -> Boolean, animationSet: AnimationSet? = defaultPopAnimation)
+    fun back(predicate: (T) -> Boolean, animationSet: AnimationSet? = defaultPopAnimation)
 
     /**
      * Swap the top controller with another one.
      */
-    fun swap(viewController: ViewController, animationSet: AnimationSet? = defaultSwapAnimation)
+    fun swap(viewController: T, animationSet: AnimationSet? = defaultSwapAnimation)
 
     /**
      * Clear the stack and initiate the stack with viewController
      */
-    fun reset(viewController: ViewController, animationSet: AnimationSet? = defaultSwapAnimation)
+    fun reset(viewController: T, animationSet: AnimationSet? = defaultSwapAnimation)
 }

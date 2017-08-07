@@ -10,7 +10,7 @@ import java.util.*
  *
  */
 
-class TypedVCStack<T : ViewController> : VCContainerImpl() {
+class TypedVCStack<T : ViewController> : VCContainerImpl(), VCStackInterface<T> {
     override val current: T get() = internalStack.peek()
 
     /**
@@ -23,9 +23,9 @@ class TypedVCStack<T : ViewController> : VCContainerImpl() {
         return internalStack[internalStack.size - 1 - index]
     }
 
-    var defaultPushAnimation: AnimationSet = AnimationSet.slidePush
-    var defaultPopAnimation: AnimationSet = AnimationSet.slidePop
-    var defaultSwapAnimation: AnimationSet = AnimationSet.fade
+    override var defaultPushAnimation: AnimationSet = AnimationSet.slidePush
+    override var defaultPopAnimation: AnimationSet = AnimationSet.slidePop
+    override var defaultSwapAnimation: AnimationSet = AnimationSet.fade
 
     val size: Int get() = internalStack.size
     val isEmpty: Boolean get() = internalStack.isEmpty()
@@ -37,10 +37,7 @@ class TypedVCStack<T : ViewController> : VCContainerImpl() {
         set(value) = setStack(value)
     private var internalStack: Stack<T> = Stack()
 
-    /**
-     * Sets the stack and updates the view.
-     */
-    fun setStack(newStack: Stack<T>, animationSet: AnimationSet? = defaultPushAnimation): Unit {
+    override fun setStack(newStack: Stack<T>, animationSet: AnimationSet?) {
         val toDispose = internalStack.filter { !newStack.contains(it) }
         internalStack = newStack
         swapListener?.invoke(current, animationSet) {
@@ -51,11 +48,10 @@ class TypedVCStack<T : ViewController> : VCContainerImpl() {
         onSwap.forEach { it(current) }
     }
 
-
     /**
      * Pushes a new controllers onto the stack.
      */
-    fun push(viewController: T, animationSet: AnimationSet? = defaultPushAnimation) {
+    override fun push(viewController: T, animationSet: AnimationSet?) {
         internalStack.push(viewController)
         swapListener?.invoke(current, animationSet) {}
         onSwap.forEach { it(current) }
@@ -64,7 +60,7 @@ class TypedVCStack<T : ViewController> : VCContainerImpl() {
     /**
      * Removes the top controllers off the stack.
      */
-    fun pop(animationSet: AnimationSet? = defaultPopAnimation) {
+    override fun pop(animationSet: AnimationSet?) {
         if (internalStack.size <= 1) {
             onEmptyListener()
         } else {
@@ -79,7 +75,7 @@ class TypedVCStack<T : ViewController> : VCContainerImpl() {
     /**
      * Pops all of the controllers except fo the first one.
      */
-    fun root(animationSet: AnimationSet? = defaultPopAnimation) {
+    override fun root(animationSet: AnimationSet?) {
         val toDispose = ArrayList<T>(internalStack)
         val root = toDispose.removeAt(0)
         while (stack.isNotEmpty()) {
@@ -97,7 +93,7 @@ class TypedVCStack<T : ViewController> : VCContainerImpl() {
     /**
      * Pops controllers off the stack until [predicate] returns true.
      */
-    fun back(predicate: (T) -> Boolean, animationSet: AnimationSet? = defaultPopAnimation) {
+    override fun back(predicate: (T) -> Boolean, animationSet: AnimationSet?) {
         val toDispose = ArrayList<T>()
         while (!predicate(internalStack.peek())) {
             toDispose.add(internalStack.pop())
@@ -114,7 +110,7 @@ class TypedVCStack<T : ViewController> : VCContainerImpl() {
     /**
      * Swaps the top controller with another one.
      */
-    fun swap(viewController: T, animationSet: AnimationSet? = defaultSwapAnimation) {
+    override fun swap(viewController: T, animationSet: AnimationSet?) {
         val toDispose = internalStack.pop()
         internalStack.push(viewController)
         swapListener?.invoke(current, animationSet) {
@@ -126,7 +122,7 @@ class TypedVCStack<T : ViewController> : VCContainerImpl() {
     /**
      * Clears the stack and initiates the stack with a single controller.
      */
-    fun reset(viewController: T, animationSet: AnimationSet? = defaultPushAnimation) {
+    override fun reset(viewController: T, animationSet: AnimationSet?) {
         val toDispose = ArrayList(internalStack)
         internalStack.clear()
         internalStack.push(viewController)
