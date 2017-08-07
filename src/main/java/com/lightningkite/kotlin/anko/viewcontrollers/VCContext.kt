@@ -18,6 +18,7 @@ interface VCContext {
     val onSaveInstanceState: MutableCollection<(outState: Bundle) -> Unit>
     val onLowMemory: MutableCollection<() -> Unit>
     val onDestroy: MutableCollection<() -> Unit>
+    val onActivityResult: MutableCollection<(request: Int, result: Int, data: Intent?) -> Unit>
 
     fun prepareOnResult(presetCode: Int = (Math.random() * Int.MAX_VALUE).toInt(), onResult: (Int, Intent?) -> Unit = { a, b -> }): Int
     fun requestPermissions(permission: Array<String>, onResult: (Map<String, Int>) -> Unit)

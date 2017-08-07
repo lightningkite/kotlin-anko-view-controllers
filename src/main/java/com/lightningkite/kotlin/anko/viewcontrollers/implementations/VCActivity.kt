@@ -15,6 +15,7 @@ import com.lightningkite.kotlin.anko.async.AndroidAsync
 import com.lightningkite.kotlin.anko.viewcontrollers.VCContext
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
+import com.lightningkite.kotlin.invokeAll
 import com.lightningkite.kotlin.runAll
 import java.util.*
 
@@ -48,25 +49,25 @@ abstract class VCActivity : AppCompatActivity(), VCContext {
     override val onResume = HashSet<() -> Unit>()
     override fun onResume() {
         super.onResume()
-        onResume.runAll()
+        onResume.invokeAll()
     }
 
     override val onPause = HashSet<() -> Unit>()
     override fun onPause() {
-        onPause.runAll()
+        onPause.invokeAll()
         super.onPause()
     }
 
     override val onSaveInstanceState = HashSet<(outState: Bundle) -> Unit>()
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        onSaveInstanceState.runAll(outState)
+        onSaveInstanceState.invokeAll(outState)
     }
 
     override val onLowMemory = HashSet<() -> Unit>()
     override fun onLowMemory() {
         super.onLowMemory()
-        onLowMemory.runAll()
+        onLowMemory.invokeAll()
     }
 
     override fun onBackPressed() {
@@ -81,7 +82,7 @@ abstract class VCActivity : AppCompatActivity(), VCContext {
             viewController.unmake(vcView!!)
             vcView = null
         }
-        onDestroy.runAll()
+        onDestroy.invokeAll()
         super.onDestroy()
     }
 
@@ -91,7 +92,7 @@ abstract class VCActivity : AppCompatActivity(), VCContext {
         val returns: HashMap<Int, (Int, Intent?) -> Unit> = HashMap()
     }
 
-    val onActivityResult = ArrayList<(Int, Int, Intent?) -> Unit>()
+    override val onActivityResult = ArrayList<(Int, Int, Intent?) -> Unit>()
 
     override fun prepareOnResult(presetCode: Int, onResult: (Int, Intent?) -> Unit): Int {
         returns[presetCode] = onResult
