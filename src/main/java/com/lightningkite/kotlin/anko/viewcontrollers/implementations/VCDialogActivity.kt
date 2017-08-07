@@ -141,3 +141,14 @@ inline fun VCContext.viewControllerDialog(container: VCStack, noinline windowMod
             onResult = { code, data -> onDismissed() }
     )
 }
+
+inline fun VCContext.viewControllerDialog(container: VCStack, noinline windowModifier: Window.() -> kotlin.Unit = {}, noinline layoutParamModifier: WindowManager.LayoutParams.() -> Unit = {}) {
+    val id: Int = container.hashCode()
+    VCDialogActivity.containers[id] = VCDialogActivity.ContainerData(container, layoutParamModifier, windowModifier)
+    startIntent(
+            Intent(context, VCDialogActivity::class.java).apply {
+                putExtra(VCDialogActivity.EXTRA_CONTAINER, id)
+            },
+            onResult = { code, data -> }
+    )
+}
