@@ -110,39 +110,6 @@ fun VCContext.getImageUriFromGallery(onResult: (Uri?) -> Unit) {
         onResult(imageUri)
     }
 }
-//
-///**
-// * Opens the camera to take a picture, returning it in [onResult].
-// */
-//fun VCContext.getImageUriFromCamera(onResult: (Uri?) -> Unit) {
-//    try {
-//        val folder = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-//                ?: Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-//                ?: Environment.getDownloadCacheDirectory()
-//        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//
-//        folder.mkdir()
-//
-//        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-//        val file = File.createTempFile(timeStamp, ".jpg", folder)
-//        val potentialFile: Uri = Uri.fromFile(file)
-//
-//        intent.putExtra(MediaStore.EXTRA_OUTPUT, potentialFile)
-//        this.startIntent(intent) { code, data ->
-//            if (code != Activity.RESULT_OK) {
-//                onResult(null); return@startIntent
-//            }
-//            println("Actual data:" + data?.data?.toString())
-//            //val fixedUri = Uri.fromFile(File((data?.data ?: potentialFile).getRealPath(this)))
-//            val fixedUri = File((data?.data ?: potentialFile).getRealPath(this)).toImageContentUri(this)
-//
-//            onResult(fixedUri)
-//        }
-//    } catch(e: Exception) {
-//        e.printStackTrace()
-//        onResult(null)
-//    }
-//}
 
 /**
  * Opens the camera to take a picture, returning it in [onResult].
