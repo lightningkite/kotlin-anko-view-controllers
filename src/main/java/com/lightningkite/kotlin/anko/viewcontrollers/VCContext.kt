@@ -20,7 +20,7 @@ interface VCContext {
     val onDestroy: MutableCollection<() -> Unit>
     val onActivityResult: MutableCollection<(request: Int, result: Int, data: Intent?) -> Unit>
 
-    fun prepareOnResult(presetCode: Int = (Math.random() * Int.MAX_VALUE).toInt(), onResult: (Int, Intent?) -> Unit = { a, b -> }): Int
+    fun prepareOnResult(presetCode: Int = (Math.random() * 65535).toInt(), onResult: (Int, Intent?) -> Unit = { a, b -> }): Int
     fun requestPermissions(permission: Array<String>, onResult: (Map<String, Int>) -> Unit)
     fun requestPermission(permission: String, onResult: (Boolean) -> Unit)
 }
