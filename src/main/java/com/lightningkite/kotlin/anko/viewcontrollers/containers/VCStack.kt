@@ -10,7 +10,7 @@ import java.util.*
  *
  * Created by jivie on 10/12/15.
  */
-open class VCStack() : VCContainerImpl() {
+open class VCStack() : VCContainerImpl(), VCStackInterface<ViewController> {
     override val current: ViewController get() = internalStack.peek()
 
     /**
@@ -23,9 +23,9 @@ open class VCStack() : VCContainerImpl() {
         return internalStack[internalStack.size - 1 - index]
     }
 
-    var defaultPushAnimation = AnimationSet.slidePush
-    var defaultPopAnimation = AnimationSet.slidePop
-    var defaultSwapAnimation = AnimationSet.fade
+    override var defaultPushAnimation: AnimationSet = AnimationSet.slidePush
+    override var defaultPopAnimation: AnimationSet = AnimationSet.slidePop
+    override var defaultSwapAnimation: AnimationSet = AnimationSet.fade
 
     val size: Int get() = internalStack.size
     val isEmpty: Boolean get() = internalStack.isEmpty()
@@ -40,7 +40,7 @@ open class VCStack() : VCContainerImpl() {
     /**
      * Sets the stack and updates the view.
      */
-    fun setStack(newStack: Stack<ViewController>, animationSet: AnimationSet? = defaultPushAnimation): Unit {
+    override fun setStack(newStack: Stack<ViewController>, animationSet: AnimationSet?): Unit {
         val toDispose = internalStack.filter { !newStack.contains(it) }
         internalStack = newStack
         swapListener?.invoke(current, animationSet) {
@@ -55,7 +55,7 @@ open class VCStack() : VCContainerImpl() {
     /**
      * Pushes a new controllers onto the stack.
      */
-    fun push(viewController: ViewController, animationSet: AnimationSet? = defaultPushAnimation) {
+    override fun push(viewController: ViewController, animationSet: AnimationSet?) {
         internalStack.push(viewController)
         swapListener?.invoke(current, animationSet) {}
         onSwap.forEach { it(current) }
@@ -64,7 +64,7 @@ open class VCStack() : VCContainerImpl() {
     /**
      * Removes the top controllers off the stack.
      */
-    fun pop(animationSet: AnimationSet? = defaultPopAnimation) {
+    override fun pop(animationSet: AnimationSet?) {
         if (internalStack.size <= 1) {
             onEmptyListener()
         } else {
@@ -79,7 +79,7 @@ open class VCStack() : VCContainerImpl() {
     /**
      * Pops all of the controllers except fo the first one.
      */
-    fun root(animationSet: AnimationSet? = defaultPopAnimation) {
+    override fun root(animationSet: AnimationSet?) {
         val toDispose = ArrayList<ViewController>(internalStack)
         val root = toDispose.removeAt(0)
         while (stack.isNotEmpty()) {
@@ -97,7 +97,7 @@ open class VCStack() : VCContainerImpl() {
     /**
      * Pops controllers off the stack until [predicate] returns true.
      */
-    fun back(predicate: (ViewController) -> Boolean, animationSet: AnimationSet? = defaultPopAnimation) {
+    override fun back(predicate: (ViewController) -> Boolean, animationSet: AnimationSet?) {
         val toDispose = ArrayList<ViewController>()
         while (!predicate(internalStack.peek())) {
             toDispose.add(internalStack.pop())
@@ -114,7 +114,7 @@ open class VCStack() : VCContainerImpl() {
     /**
      * Swaps the top controller with another one.
      */
-    fun swap(viewController: ViewController, animationSet: AnimationSet? = defaultSwapAnimation) {
+    override fun swap(viewController: ViewController, animationSet: AnimationSet?) {
         val toDispose = internalStack.pop()
         internalStack.push(viewController)
         swapListener?.invoke(current, animationSet) {
@@ -126,7 +126,7 @@ open class VCStack() : VCContainerImpl() {
     /**
      * Clears the stack and initiates the stack with a single controller.
      */
-    fun reset(viewController: ViewController, animationSet: AnimationSet? = defaultSwapAnimation) {
+    override fun reset(viewController: ViewController, animationSet: AnimationSet?) {
         val toDispose = ArrayList(internalStack)
         internalStack.clear()
         internalStack.push(viewController)

@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.lightningkite.kotlin.anko.async.AndroidAsync
 import com.lightningkite.kotlin.anko.viewcontrollers.VCContext
@@ -24,7 +25,7 @@ import java.util.*
  * [VCContainer], and use the back button on the [VCContainer].
  * Created by jivie on 10/12/15.
  */
-abstract class VCActivity : Activity(), VCContext {
+abstract class VCActivity : AppCompatActivity(), VCContext {
 
     override val activity: Activity?
         get() = this
