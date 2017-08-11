@@ -37,6 +37,7 @@ class VCDialogActivity : VCActivity() {
         get() = myContainerData?.vc ?: ViewController.EMPTY
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         myIndex = intent.getIntExtra(EXTRA_CONTAINER, 0)
         myContainerData = containers[myIndex]
         if (myContainerData != null) {
