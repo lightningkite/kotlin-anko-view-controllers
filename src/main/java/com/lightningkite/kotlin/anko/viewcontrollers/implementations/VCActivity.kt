@@ -114,7 +114,7 @@ abstract class VCActivity : AppCompatActivity(), VCContext {
         }
 
         if (ungranted.isNotEmpty()) {
-            val generated: Int = (Math.random() * Int.MAX_VALUE).toInt()
+            val generated: Int = (Math.random() * 0xFFFF).toInt()
 
             requestReturns[generated] = onResult
 
@@ -131,7 +131,7 @@ abstract class VCActivity : AppCompatActivity(), VCContext {
     override fun requestPermission(permission: String, onResult: (Boolean) -> Unit) {
         if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
 
-            val generated: Int = (Math.random() * Int.MAX_VALUE).toInt()
+            val generated: Int = (Math.random() * 0xFFFF).toInt()
             requestReturns[generated] = {
                 onResult(it[permission] == PackageManager.PERMISSION_GRANTED)
             }
