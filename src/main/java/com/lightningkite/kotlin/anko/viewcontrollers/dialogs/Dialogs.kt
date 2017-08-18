@@ -12,10 +12,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import com.lightningkite.kotlin.anko.*
+import com.lightningkite.kotlin.anko.hideSoftInput
+import com.lightningkite.kotlin.anko.selectableItemBackgroundBorderlessResource
+import com.lightningkite.kotlin.anko.snackbar
+import com.lightningkite.kotlin.anko.textColorResource
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCStack
 import com.lightningkite.kotlin.anko.viewcontrollers.implementations.dialog
-import com.lightningkite.kotlin.lifecycle.listen
 import org.jetbrains.anko.*
 
 private inline fun ViewGroup.MarginLayoutParams.standardMargins(ctx: Context) {
@@ -285,24 +287,6 @@ fun Context.infoDialog(title: Int? = null, message: Int, content: (ViewGroup.(VC
 
 fun Context.infoDialog(title: String? = null, message: String, content: (ViewGroup.(VCStack) -> View)? = null, onConfirm: () -> Unit = {}) {
     return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm)), content = content)
-}
-
-fun Context.progressDialog(title: Int? = null, message: Int, completeSignal: MutableCollection<() -> Unit>) {
-    return standardDialog(title, message, listOf(), content = { stack ->
-        lifecycle.listen(completeSignal) {
-            stack.pop()
-        }
-        progressBar()
-    }, dismissOnClickOutside = false)
-}
-
-fun Context.progressDialog(title: String? = null, message: String, completeSignal: MutableCollection<() -> Unit>) {
-    return standardDialog(title, message, listOf(), content = { stack ->
-        lifecycle.listen(completeSignal) {
-            stack.pop()
-        }
-        progressBar()
-    }, dismissOnClickOutside = false)
 }
 
 
