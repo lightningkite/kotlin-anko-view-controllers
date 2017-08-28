@@ -281,11 +281,11 @@ fun Context.customConfirmationDialog(title: Int? = null, message: Int, okResourc
     )
 }
 
-fun Context.infoDialog(title: Int? = null, message: Int, content: (ViewGroup.(VCStack) -> View)? = null, onConfirm: () -> Unit = {}) {
+fun Context.infoDialog(title: Int? = null, message: Int?, content: (ViewGroup.(VCStack) -> View)? = null, onConfirm: () -> Unit = {}) {
     return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm)), content = content)
 }
 
-fun Context.infoDialog(title: String? = null, message: String, content: (ViewGroup.(VCStack) -> View)? = null, onConfirm: () -> Unit = {}) {
+fun Context.infoDialog(title: String? = null, message: String?, content: (ViewGroup.(VCStack) -> View)? = null, onConfirm: () -> Unit = {}) {
     return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm)), content = content)
 }
 
