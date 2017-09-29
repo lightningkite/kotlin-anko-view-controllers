@@ -63,6 +63,12 @@ class VCDialogActivity : VCActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if (intent.getBooleanExtra(EXTRA_DISMISS_ON_TOUCH_OUTSIDE, true)) {
+            super.onBackPressed()
+        }
+    }
+
     override fun finish() {
         containers.remove(myIndex)
         super.finish()
