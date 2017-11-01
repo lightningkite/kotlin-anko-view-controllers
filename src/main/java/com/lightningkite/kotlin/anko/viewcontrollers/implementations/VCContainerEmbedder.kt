@@ -27,11 +27,6 @@ class VCContainerEmbedder(val vcContext: VCContext, val root: ViewGroup, val con
         val animation = preferredAnimation ?: defaultAnimation
         current = new
         val newView = new.make(vcContext)
-//                .apply {
-//                    if (this !is AbsListView) {
-//                        setOnClickListener { }
-//                    }
-//                }
         root.addView(newView, makeLayoutParams())
         currentView = newView
         if (old != null && oldView != null) {

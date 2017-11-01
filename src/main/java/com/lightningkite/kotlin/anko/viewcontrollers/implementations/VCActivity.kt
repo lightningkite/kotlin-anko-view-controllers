@@ -16,7 +16,6 @@ import com.lightningkite.kotlin.anko.viewcontrollers.VCContext
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
 import com.lightningkite.kotlin.invokeAll
-import com.lightningkite.kotlin.runAll
 import java.util.*
 
 /**
@@ -100,7 +99,7 @@ abstract class VCActivity : AppCompatActivity(), VCContext {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        onActivityResult.runAll(requestCode, resultCode, data)
+        onActivityResult.invokeAll(requestCode, resultCode, data)
         returns[requestCode]?.invoke(resultCode, data)
         returns.remove(requestCode)
     }
