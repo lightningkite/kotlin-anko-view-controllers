@@ -13,6 +13,7 @@ interface VCContext {
     val activity: Activity?
     val context: Context
 
+    val onNewIntent: MutableCollection<(Intent) -> Unit> get() = ArrayList()
     val onResume: MutableCollection<() -> Unit>
     val onPause: MutableCollection<() -> Unit>
     val onSaveInstanceState: MutableCollection<(outState: Bundle) -> Unit>

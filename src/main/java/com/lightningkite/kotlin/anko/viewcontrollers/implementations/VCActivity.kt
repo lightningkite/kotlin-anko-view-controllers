@@ -69,6 +69,12 @@ abstract class VCActivity : AppCompatActivity(), VCContext {
         onLowMemory.invokeAll()
     }
 
+    override val onNewIntent = HashSet<(Intent) -> Unit>()
+    override fun onNewIntent(intent: Intent) {
+        super<AppCompatActivity>.onNewIntent(intent)
+        onNewIntent.invokeAll(intent)
+    }
+
     override fun onBackPressed() {
         viewController.onBackPressed {
             super.onBackPressed()
