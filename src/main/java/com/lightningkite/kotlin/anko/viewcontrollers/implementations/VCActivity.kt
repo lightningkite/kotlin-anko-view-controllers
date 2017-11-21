@@ -73,6 +73,7 @@ abstract class VCActivity : AppCompatActivity(), VCContext {
     override fun onNewIntent(intent: Intent) {
         super<AppCompatActivity>.onNewIntent(intent)
         onNewIntent.invokeAll(intent)
+        println("onNewIntent")
     }
 
     override fun onBackPressed() {
