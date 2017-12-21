@@ -12,7 +12,7 @@ kt_replacements = [
 ]
 kt_plain_replacements = [
 	("AnkoContext<VCActivity>", "AnkoContext<VCContext>"),
-	("import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCActivity", "import com.lightningkite.kotlin.anko.viewcontrollers.VCContext"),
+	("import com.lightningkite.kotlin.anko.viewcontrollers.VCContext", "import com.lightningkite.kotlin.anko.viewcontrollers.VCContext"),
 	("viewContainer(", "viewContainer(ui.owner, "),
 	("viewController(", "viewController(ui.owner, "),
 	("embedViewContainer(", "embedViewContainer(ui.owner, "),

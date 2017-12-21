@@ -50,7 +50,7 @@ class StackDemoVC(val stack: VCStack, val depth: Int = 1) : AnkoViewController()
     }
 
     //This function actually creates the view.
-    override fun createView(ui: AnkoContext<VCActivity>): View = ui.verticalLayout {
+    override fun createView(ui: AnkoContext<VCContext>): View = ui.verticalLayout {
         gravity = Gravity.CENTER
 
         textView("This view controller has a depth of $depth.") {
