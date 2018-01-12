@@ -15,7 +15,7 @@ import com.lightningkite.kotlin.anko.async.AndroidAsync
 import com.lightningkite.kotlin.anko.viewcontrollers.VCContext
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
-import com.lightningkite.kotlin.invokeAll
+import com.lightningkite.kotlin.lambda.invokeAll
 import java.util.*
 
 /**

@@ -5,14 +5,12 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.lightningkite.kotlin.Disposable
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
 import com.lightningkite.kotlin.anko.viewcontrollers.implementations.ContainerVC
 import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCContainerEmbedder
-import com.lightningkite.kotlin.invokeAll
+import com.lightningkite.kotlin.lambda.invokeAll
 import com.lightningkite.kotlin.lifecycle.LifecycleConnectable
 import com.lightningkite.kotlin.lifecycle.LifecycleListener
-import com.lightningkite.kotlin.runAll
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.matchParent
 import java.util.*

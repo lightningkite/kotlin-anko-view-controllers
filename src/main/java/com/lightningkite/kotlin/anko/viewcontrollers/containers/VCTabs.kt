@@ -2,7 +2,7 @@ package com.lightningkite.kotlin.anko.viewcontrollers.containers
 
 import com.lightningkite.kotlin.anko.animation.AnimationSet
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
-import com.lightningkite.kotlin.invokeAll
+import com.lightningkite.kotlin.lambda.invokeAll
 import java.util.*
 
 /**
