@@ -2,7 +2,11 @@ package com.lightningkite.kotlin.anko.viewcontrollers;
 
 import android.content.res.Resources
 import android.view.View
-import com.lightningkite.kotlin.Disposable
+import com.lightningkite.kotlin.anko.ViewGenerator
+import com.lightningkite.kotlin.anko.activity.ActivityAccess
+import com.lightningkite.kotlin.anko.lifecycle
+import com.lightningkite.kotlin.lifecycle.LifecycleListener
+import java.io.Closeable
 
 /**
  * An object that manages a view.
@@ -10,12 +14,30 @@ import com.lightningkite.kotlin.Disposable
  * It should retain no references to the views except between calls to [make] and [unmake].
  * Created by jivie on 6/26/15.
  */
-interface ViewController : Disposable {
+@Deprecated("Use a view generator and associated model instead.")
+interface ViewController : Closeable, ViewGenerator<Unit> {
     /**
      * An empty/dummy view controller.
      */
     object EMPTY : ViewController {
         override fun make(vcContext: VCContext): View = View(vcContext.context)
+    }
+
+    override fun invoke(access: ActivityAccess, model: Unit): View {
+        val newView = make(access)
+
+        //TODO add animation listeners?
+
+        //add unmake listener
+        newView.lifecycle.connect(object : LifecycleListener {
+            override fun onStart() {}
+
+            override fun onStop() {
+                unmake(newView)
+            }
+        })
+
+        return newView
     }
 
     /**
@@ -44,8 +66,9 @@ interface ViewController : Disposable {
     /**
      * Dispose anything that needs to be disposed.  After this is called, you should never use this object again.
      */
-    override fun dispose() {
-    }
+    fun dispose(): Unit {}
+
+    override fun close(): Unit = dispose()
 
     /**
      * Gets the human-friendly title of this view.  Useful for putting the title on the action bar, if you use one.

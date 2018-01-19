@@ -11,6 +11,7 @@ import java.util.*
  * @param vcs The view controllers to display.
  * Created by jivie on 10/14/15.
  */
+@Deprecated("Deprecated along with ViewControllers in general.")
 class VCTabs(startIndex: Int, vcs: List<ViewController>) : VCContainerImpl() {
 
     constructor(startIndex: Int, vararg vcs: ViewController) : this(startIndex, vcs.toList())
@@ -57,9 +58,9 @@ class VCTabs(startIndex: Int, vcs: List<ViewController>) : VCContainerImpl() {
         onIndexChange.add(onChangeListener)
     }
 
-    override fun dispose() {
+    override fun close() {
         onIndexChange.remove(onChangeListener)
-        viewControllers.forEach { it.dispose() }
+        viewControllers.forEach { it.close() }
     }
 
 }

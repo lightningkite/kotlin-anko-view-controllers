@@ -9,7 +9,7 @@ import java.util.*
  * Created by shanethompson on 7/21/17.
  *
  */
-
+@Deprecated("Deprecated along with ViewControllers in general.")
 class TypedVCStack<T : ViewController> : VCContainerImpl(), VCStackInterface<T> {
     override val current: T get() = internalStack.peek()
 
@@ -152,9 +152,9 @@ class TypedVCStack<T : ViewController> : VCContainerImpl(), VCStackInterface<T> 
     /**
      * Disposes all of the view controllers in the stack.
      */
-    override fun dispose() {
+    override fun close() {
         for (vc in internalStack) {
-            vc.dispose()
+            vc.close()
         }
     }
 }

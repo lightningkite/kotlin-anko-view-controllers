@@ -10,6 +10,7 @@ import java.util.*
  *
  * Created by jivie on 10/12/15.
  */
+@Deprecated("Deprecated along with ViewControllers in general.", ReplaceWith("StackObservableProperty<Any>", "com.lightningkite.kotlin.observable.property"))
 open class VCStack() : VCContainerImpl(), VCStackInterface<ViewController> {
     override val current: ViewController get() = internalStack.peek()
 
@@ -156,9 +157,9 @@ open class VCStack() : VCContainerImpl(), VCStackInterface<ViewController> {
     /**
      * Disposes all of the view controllers in the stack.
      */
-    override fun dispose() {
+    override fun close() {
         for (vc in internalStack) {
-            vc.dispose()
+            vc.close()
         }
     }
 }

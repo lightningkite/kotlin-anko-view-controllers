@@ -8,6 +8,7 @@ import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
  * another one.  Keeps no history of past [ViewController]s.
  * Created by jivie on 10/14/15.
  */
+@Deprecated("Deprecated along with ViewControllers in general.")
 class VCSwapper(startVC: ViewController) : VCContainerImpl() {
 
     override var current: ViewController = startVC
@@ -21,8 +22,8 @@ class VCSwapper(startVC: ViewController) : VCContainerImpl() {
         onSwap.forEach { it(current) }
     }
 
-    override fun dispose() {
-        current.dispose()
+    override fun close() {
+        current.close()
     }
 
 }

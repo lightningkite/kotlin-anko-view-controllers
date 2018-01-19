@@ -10,6 +10,7 @@ import org.jetbrains.anko.*
  *
  * Created by joseph on 8/4/16.
  */
+@Deprecated("Deprecated along with ViewControllers in general.")
 class HTMLViewController(val title: String?, val html: String) : AnkoViewController() {
     override fun createView(ui: AnkoContext<VCContext>): View = ui.verticalLayout {
         if (title != null) {

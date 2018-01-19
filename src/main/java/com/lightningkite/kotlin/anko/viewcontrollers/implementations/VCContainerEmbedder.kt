@@ -12,6 +12,7 @@ import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
  *
  * Created by joseph on 11/7/16.
  */
+@Deprecated("Deprecated along with ViewControllers in general.")
 class VCContainerEmbedder(val vcContext: VCContext, val root: ViewGroup, val container: VCContainer, val makeLayoutParams: () -> ViewGroup.LayoutParams) {
 
     var defaultAnimation: AnimationSet? = AnimationSet.fade

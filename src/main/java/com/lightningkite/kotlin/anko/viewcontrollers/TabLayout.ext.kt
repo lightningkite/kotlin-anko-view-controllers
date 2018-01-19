@@ -10,6 +10,7 @@ import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCTabs
  * Uses [ViewController.getTitle] as the name for each tab.
  * Created by jivie on 6/6/16.
  */
+@Deprecated("VCTabs is now deprecated.")
 inline fun TabLayout.setUpWithVCTabs(vcTabs: VCTabs, crossinline onReselect: (Int) -> Unit, crossinline onSelectBeforeChange: (Int) -> Unit, crossinline tabBuilder: TabLayout.Tab.(Int) -> Unit) {
 
     val offset = tabCount

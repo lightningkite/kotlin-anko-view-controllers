@@ -15,6 +15,7 @@ import java.util.*
  * Useful if you want to have a smaller section of your view that changes, like you might with tabs.
  * Created by jivie on 10/14/15.
  */
+@Deprecated("Deprecated along with ViewControllers in general.")
 open class ContainerVC(
         val container: VCContainer,
         val disposeContainer: Boolean = true,
@@ -48,7 +49,7 @@ open class ContainerVC(
 
     override fun dispose() {
         if (disposeContainer) {
-            container.dispose()
+            container.close()
         }
         super.dispose()
     }

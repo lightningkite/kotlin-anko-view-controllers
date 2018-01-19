@@ -10,6 +10,7 @@ import java.util.*
  *
  */
 
+@Deprecated("Deprecated along with ViewControllers in general.")
 interface VCStackInterface<T : ViewController> : VCContainer {
 
     var defaultPushAnimation: AnimationSet

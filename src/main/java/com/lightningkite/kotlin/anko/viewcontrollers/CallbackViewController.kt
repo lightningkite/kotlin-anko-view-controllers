@@ -13,6 +13,7 @@ import com.lightningkite.kotlin.lifecycle.LifecycleConnectable
 import com.lightningkite.kotlin.lifecycle.LifecycleListener
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.matchParent
+import java.io.Closeable
 import java.util.*
 
 /**
@@ -25,6 +26,7 @@ import java.util.*
  * Created by jivie on 1/19/16.
  */
 
+@Deprecated("Deprecated along with ViewControllers in general.")
 abstract class CallbackViewController() : ViewController {
 
     val onMake: ArrayList<(View) -> Unit> = ArrayList()
@@ -103,25 +105,35 @@ abstract class CallbackViewController() : ViewController {
     }
 
     override fun animateInComplete(vcContext: VCContext, view: View) {
-        onAnimateInComplete.runAll(vcContext, view)
+        onAnimateInComplete.invokeAll(vcContext, view)
         onAnimateInComplete.clear()
         super.animateInComplete(vcContext, view)
     }
 
     override fun animateOutStart(vcContext: VCContext, view: View) {
-        onAnimateOutStart.runAll(vcContext, view)
+        onAnimateOutStart.invokeAll(vcContext, view)
         onAnimateOutStart.clear()
         super.animateOutStart(vcContext, view)
     }
 
-    fun <T : Disposable> autoDispose(disposable: T): T {
-        onDispose.add { disposable.dispose() }
-        return disposable
+    fun <T : Closeable> autoDispose(disposable: T): T = autoClose(disposable)
+    fun <T : Closeable> autoClose(closeable: T): T {
+        onDispose.add { closeable.close() }
+        return closeable
     }
 
     /**
      * Creates a view that shows whatever is in the view container, transitioning between view controllers as needed.
      */
+    @Deprecated(
+            message = "Use the components to achieve the same thing more cleanly.",
+            replaceWith = ReplaceWith(
+                    "this.swapView { bindRenderMap(vcContext, container, CentralRenderMappings) }",
+                    "com.lightningkite.kotlin.anko.swapView",
+                    "com.lightningkite.kotlin.anko.observable.bindRenderMap",
+                    "com.lightningkite.kotlin.anko.observable.CentralRenderMappings"
+            )
+    )
     fun ViewGroup.viewContainer(vcContext: VCContext, container: VCContainer): View {
         return viewController(vcContext, ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), {})
     }
@@ -129,6 +141,15 @@ abstract class CallbackViewController() : ViewController {
     /**
      * Creates a view that shows whatever is in the view container, transitioning between view controllers as needed.
      */
+    @Deprecated(
+            message = "Use the components to achieve the same thing more cleanly.",
+            replaceWith = ReplaceWith(
+                    "this.swapView { bindRenderMap(vcContext, container, CentralRenderMappings); init.invoke(this) }",
+                    "com.lightningkite.kotlin.anko.swapView",
+                    "com.lightningkite.kotlin.anko.observable.bindRenderMap",
+                    "com.lightningkite.kotlin.anko.observable.CentralRenderMappings"
+            )
+    )
     inline fun ViewGroup.viewContainer(vcContext: VCContext, container: VCContainer, init: View.() -> Unit): View {
         return viewController(vcContext, ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), init)
     }
@@ -136,6 +157,12 @@ abstract class CallbackViewController() : ViewController {
     /**
      * Creates a view that shows a single [ViewController].
      */
+    @Deprecated(
+            message = "Use the components to achieve the same thing with less work.",
+            replaceWith = ReplaceWith(
+                    "this.addView(controller.invoke(vcContext, Unit))"
+            )
+    )
     inline fun ViewGroup.viewController(vcContext: VCContext, controller: ViewController, init: View.() -> Unit): View {
         val view = controller.make(vcContext)
         addView(view)
@@ -155,6 +182,15 @@ abstract class CallbackViewController() : ViewController {
     /**
      * Creates a view that shows whatever is in the view container, transitioning between view controllers as needed.
      */
+    @Deprecated(
+            message = "Use the components to achieve the same thing more cleanly.",
+            replaceWith = ReplaceWith(
+                    "this.swapView { bindRenderMap(vcContext, container, CentralRenderMappings) }",
+                    "com.lightningkite.kotlin.anko.swapView",
+                    "com.lightningkite.kotlin.anko.observable.bindRenderMap",
+                    "com.lightningkite.kotlin.anko.observable.CentralRenderMappings"
+            )
+    )
     fun AnkoContext<*>.viewContainer(vcContext: VCContext, container: VCContainer): View {
         return viewController(vcContext, ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), {})
     }
@@ -162,6 +198,15 @@ abstract class CallbackViewController() : ViewController {
     /**
      * Creates a view that shows whatever is in the view container, transitioning between view controllers as needed.
      */
+    @Deprecated(
+            message = "Use the components to achieve the same thing more cleanly.",
+            replaceWith = ReplaceWith(
+                    "this.swapView { bindRenderMap(vcContext, container, CentralRenderMappings); init.invoke(this) }",
+                    "com.lightningkite.kotlin.anko.swapView",
+                    "com.lightningkite.kotlin.anko.observable.bindRenderMap",
+                    "com.lightningkite.kotlin.anko.observable.CentralRenderMappings"
+            )
+    )
     inline fun AnkoContext<*>.viewContainer(vcContext: VCContext, container: VCContainer, init: View.() -> Unit): View {
         return viewController(vcContext, ContainerVC(container, false, { FrameLayout.LayoutParams(matchParent, matchParent) }), init)
     }
@@ -169,6 +214,12 @@ abstract class CallbackViewController() : ViewController {
     /**
      * Creates a view that shows a single [ViewController].
      */
+    @Deprecated(
+            message = "Use the components to achieve the same thing with less work.",
+            replaceWith = ReplaceWith(
+                    "this.addView(controller.invoke(vcContext, Unit))"
+            )
+    )
     inline fun AnkoContext<*>.viewController(vcContext: VCContext, controller: ViewController, init: View.() -> Unit): View {
         val view = controller.make(vcContext)
         addView(view, ViewGroup.LayoutParams(matchParent, matchParent))

@@ -1,16 +1,17 @@
 package com.lightningkite.kotlin.anko.viewcontrollers.containers
 
 import android.content.res.Resources
-import com.lightningkite.kotlin.Disposable
 import com.lightningkite.kotlin.anko.animation.AnimationSet
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
-import java.util.*
+import com.lightningkite.kotlin.observable.property.ObservableProperty
+import java.io.Closeable
 
 /**
  * Something that contains [ViewController]s and handles the changes between them.
  * Created by jivie on 10/12/15.
  */
-interface VCContainer : Disposable {
+@Deprecated("Deprecated along with ViewControllers in general.")
+interface VCContainer : Closeable, ObservableProperty<ViewController> {
 
     var swapListener: ((newVC: ViewController, AnimationSet?, onFinish: () -> Unit) -> Unit)?
     val onSwap: MutableList<(ViewController) -> Unit>
@@ -24,9 +25,4 @@ interface VCContainer : Disposable {
     fun getTitle(resources: Resources): String {
         return current.getTitle(resources)
     }
-}
-
-abstract class VCContainerImpl : VCContainer {
-    override var swapListener: ((newVC: ViewController, AnimationSet?, onFinish: () -> Unit) -> Unit)? = null
-    override val onSwap: MutableList<(ViewController) -> Unit> = ArrayList()
 }

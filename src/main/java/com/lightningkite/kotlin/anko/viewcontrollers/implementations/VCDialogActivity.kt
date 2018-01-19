@@ -18,6 +18,8 @@ import java.util.*
  * A specific [VCActivity]
  * Created by jivie on 10/12/15.
  */
+//TODO: How do we replace this?
+@Deprecated("Deprecated along with ViewControllers in general.")
 class VCDialogActivity : VCActivity() {
 
     class ContainerData(val container: VCStack, val layoutParamsSetup: WindowManager.LayoutParams.() -> Unit, val windowModifier: Window.() -> Unit = {}) {
@@ -77,7 +79,7 @@ class VCDialogActivity : VCActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (!containers.containsKey(myIndex)) {
-            myContainerData?.container?.dispose()
+            myContainerData?.container?.close()
         }
     }
 }
