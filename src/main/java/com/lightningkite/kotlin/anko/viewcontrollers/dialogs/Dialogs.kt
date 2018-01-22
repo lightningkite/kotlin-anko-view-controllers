@@ -93,6 +93,13 @@ object StandardDialog {
     }
 }
 
+@Deprecated(
+        "Use the other dialog function that is not dependent on VCs.",
+        ReplaceWith(
+                "this.alertDialog(message)",
+                "com.lightningkite.kotlin.anko.activity.alertDialog"
+        )
+)
 fun Context.alertDialog(message: Int) = standardDialog(
         null,
         resources.getString(message),
@@ -101,6 +108,13 @@ fun Context.alertDialog(message: Int) = standardDialog(
         null
 )
 
+@Deprecated(
+        "Use the other dialog function that is not dependent on VCs.",
+        ReplaceWith(
+                "this.standardDialog(title = title, message = message, buttons = buttons, dismissOnClickOutside = dismissOnClickOutside, content = content)",
+                "com.lightningkite.kotlin.anko.activity.standardDialog"
+        )
+)
 fun Context.standardDialog(
         title: Int?,
         message: Int?,
@@ -126,6 +140,13 @@ object CustomDialog {
 /**
  * Creates a psuedo-dialog that is actually an activity.  Significantly more stable and safe.
  */
+@Deprecated(
+        "Use the other dialog function that is not dependent on VCs.",
+        ReplaceWith(
+                "this.standardDialog(title = title, message = message, buttons = buttons, dismissOnClickOutside = dismissOnClickOutside, content = content)",
+                "com.lightningkite.kotlin.anko.activity.standardDialog"
+        )
+)
 fun Context.standardDialog(
         title: String?,
         message: String?,
@@ -181,6 +202,13 @@ fun Context.standardDialog(
     }
 }
 
+@Deprecated(
+        "Use the other dialog function that is not dependent on VCs.",
+        ReplaceWith(
+                "this.standardDialog(title = title, message = message, buttons = buttons, dismissOnClickOutside = dismissOnClickOutside, content = content)",
+                "com.lightningkite.kotlin.anko.activity.standardDialog"
+        )
+)
 fun Context.customDialog(
         title: Int?,
         message: Int,
@@ -198,6 +226,13 @@ fun Context.customDialog(
 /**
  * Creates a psuedo-dialog that is actually an activity.  Significantly more stable and safe.
  */
+@Deprecated(
+        "Use the other dialog function that is not dependent on VCs.",
+        ReplaceWith(
+                "this.standardDialog(title = title, message = message, buttons = buttons, dismissOnClickOutside = dismissOnClickOutside, content = content)",
+                "com.lightningkite.kotlin.anko.activity.standardDialog"
+        )
+)
 fun Context.customDialog(
         title: String?,
         message: String,
@@ -248,14 +283,35 @@ fun Context.customDialog(
     }
 }
 
+@Deprecated(
+        "Use the other dialog function that is not dependent on VCs.",
+        ReplaceWith(
+                "this.confirmationDialog(title = title, message = message, onCancel = onCancel, onConfirm = onConfirm)",
+                "com.lightningkite.kotlin.anko.activity.confirmationDialog"
+        )
+)
 fun Context.confirmationDialog(title: Int? = null, message: Int, onCancel: () -> Unit = {}, onConfirm: () -> Unit) {
     return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm), StandardDialog.cancelButton(resources, action = onCancel)))
 }
 
+@Deprecated(
+        "Use the other dialog function that is not dependent on VCs.",
+        ReplaceWith(
+                "this.confirmationDialog(title = title, message = message, onCancel = onCancel, onConfirm = onConfirm)",
+                "com.lightningkite.kotlin.anko.activity.confirmationDialog"
+        )
+)
 fun Context.confirmationDialog(title: String? = null, message: String, onCancel: () -> Unit = {}, onConfirm: () -> Unit) {
     return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm), StandardDialog.cancelButton(resources, action = onCancel)))
 }
 
+@Deprecated(
+        "Use the other dialog function that is not dependent on VCs.",
+        ReplaceWith(
+                """this.confirmationDialog(title = title, message = message, okResource = okResource, cancelResource = cancelResource, dismissOnClickOutside = dismissOnClickOutside, onPositiveAction = onPositiveAction, onNegativeAction = onNegativeAction )""",
+                "com.lightningkite.kotlin.anko.activity.confirmationDialog"
+        )
+)
 fun Context.confirmationDialog(title: String? = null, message: String, okResource: Int = R.string.ok, cancelResource: Int = R.string.cancel, dismissOnClickOutside: Boolean = true, onPositiveAction: () -> Unit, onNegativeAction: () -> Unit) {
     return standardDialog(
             title,
@@ -264,6 +320,13 @@ fun Context.confirmationDialog(title: String? = null, message: String, okResourc
             dismissOnClickOutside = dismissOnClickOutside)
 }
 
+@Deprecated(
+        "Use the other dialog function that is not dependent on VCs.",
+        ReplaceWith(
+                "this.confirmationDialog(title = title, message = message, okResource = okResource, cancelResource = cancelResource, dismissOnClickOutside = dismissOnClickOutside, onPositiveAction = onPositiveAction, onNegativeAction = onNegativeAction )",
+                "com.lightningkite.kotlin.anko.activity.confirmationDialog"
+        )
+)
 fun Context.confirmationDialog(title: Int? = null, message: Int, okResource: Int = R.string.ok, cancelResource: Int = R.string.cancel, dismissOnClickOutside: Boolean = true, onPositiveAction: () -> Unit, onNegativeAction: () -> Unit) {
     return standardDialog(
             title,
@@ -272,19 +335,24 @@ fun Context.confirmationDialog(title: Int? = null, message: Int, okResource: Int
             dismissOnClickOutside = dismissOnClickOutside)
 }
 
-fun Context.customConfirmationDialog(title: Int? = null, message: Int, okResource: Int = R.string.ok, cancelResource: Int = R.string.cancel, dismissOnClickOutside: Boolean = true, onPositiveAction: () -> Unit, onNegativeAction: () -> Unit, okStyle: Button.() -> Unit, cancelStyle: Button.() -> Unit) {
-    return customDialog(
-            title,
-            message,
-            listOf(CustomDialog.okButton(resources, okResource, onPositiveAction, okStyle), CustomDialog.cancelButton(resources, cancelResource, onNegativeAction, cancelStyle)),
-            dismissOnClickOutside = dismissOnClickOutside
-    )
-}
-
+@Deprecated(
+        "Use the other dialog function that is not dependent on VCs.",
+        ReplaceWith(
+                "this.infoDialog(title = title, messsage = message, content = content, onConfirm = onConfirm)",
+                "com.lightningkite.kotlin.anko.activity.infoDialog"
+        )
+)
 fun Context.infoDialog(title: Int? = null, message: Int?, content: (ViewGroup.(VCStack) -> View)? = null, onConfirm: () -> Unit = {}) {
     return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm)), content = content)
 }
 
+@Deprecated(
+        "Use the other dialog function that is not dependent on VCs.",
+        ReplaceWith(
+                "this.infoDialog(title = title, messsage = message, content = content, onConfirm = onConfirm)",
+                "com.lightningkite.kotlin.anko.activity.infoDialog"
+        )
+)
 fun Context.infoDialog(title: String? = null, message: String?, content: (ViewGroup.(VCStack) -> View)? = null, onConfirm: () -> Unit = {}) {
     return standardDialog(title, message, listOf(StandardDialog.okButton(resources, action = onConfirm)), content = content)
 }
@@ -293,6 +361,13 @@ fun Context.infoDialog(title: String? = null, message: String?, content: (ViewGr
 /**
  * Creates a dialog with an input text field on it.
  */
+@Deprecated(
+        "Use the other dialog function that is not dependent on VCs.",
+        ReplaceWith(
+                """this.inputDialog(title = title, message = message, hint = hint, defaultValue = defaultValue, inputType = inputType, canCancel = canCancel, validation = validation, onResult = onResult)""",
+                "com.lightningkite.kotlin.anko.activity.inputDialog"
+        )
+)
 fun Context.inputDialog(
         title: Int,
         message: Int,
@@ -319,6 +394,13 @@ fun Context.inputDialog(
 /**
  * Creates a dialog with an input text field on it.
  */
+@Deprecated(
+        "Use the other dialog function that is not dependent on VCs.",
+        ReplaceWith(
+                """this.inputDialog(title = title, message = message, hint = hint, defaultValue = defaultValue, inputType = inputType, canCancel = canCancel, validation = validation, onResult = onResult)""",
+                "com.lightningkite.kotlin.anko.activity.inputDialog"
+        )
+)
 fun Context.inputDialog(
         title: String,
         message: String,

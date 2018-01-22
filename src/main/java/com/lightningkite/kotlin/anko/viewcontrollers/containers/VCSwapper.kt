@@ -1,29 +1,12 @@
 package com.lightningkite.kotlin.anko.viewcontrollers.containers
 
-import com.lightningkite.kotlin.anko.animation.AnimationSet
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
+import com.lightningkite.kotlin.observable.property.StandardObservableProperty
 
-/**
- * The simplest [VCContainer] implementation.  Can swap the [ViewController] that is visible for
- * another one.  Keeps no history of past [ViewController]s.
- * Created by jivie on 10/14/15.
- */
-@Deprecated("Deprecated along with ViewControllers in general.")
-class VCSwapper(startVC: ViewController) : VCContainerImpl() {
+@Deprecated("Use observable properties directly", ReplaceWith("StandardObservableProperty<Any>", "com.lightningkite.kotlin.observable.property.StandardObservableProperty"))
+typealias VCSwapper = StandardObservableProperty<Any>
 
-    override var current: ViewController = startVC
-
-    fun swap(vc: ViewController, animation: AnimationSet? = null) {
-        val toDispose = current
-        current = vc
-        swapListener?.invoke(vc, animation) {
-            toDispose.dispose()
-        }
-        onSwap.forEach { it(current) }
-    }
-
-    override fun close() {
-        current.close()
-    }
-
+@Deprecated("Just change the value.", ReplaceWith("this.value = other"))
+fun VCSwapper.swap(other: ViewController) {
+    this.value = other
 }

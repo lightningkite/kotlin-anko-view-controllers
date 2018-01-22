@@ -1,8 +1,8 @@
 package com.lightningkite.kotlin.anko.viewcontrollers.containers
 
-import com.lightningkite.kotlin.anko.animation.AnimationSet
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import com.lightningkite.kotlin.lambda.invokeAll
+import com.lightningkite.kotlin.observable.property.ObservableProperty
 import java.util.*
 
 /**
@@ -11,8 +11,8 @@ import java.util.*
  * @param vcs The view controllers to display.
  * Created by jivie on 10/14/15.
  */
-@Deprecated("Deprecated along with ViewControllers in general.")
-class VCTabs(startIndex: Int, vcs: List<ViewController>) : VCContainerImpl() {
+@Deprecated("Use a integer observable with a mapper when binding.")
+class VCTabs(startIndex: Int, vcs: List<ViewController>) : ObservableProperty<ViewController> {
 
     constructor(startIndex: Int, vararg vcs: ViewController) : this(startIndex, vcs.toList())
 
@@ -22,45 +22,16 @@ class VCTabs(startIndex: Int, vcs: List<ViewController>) : VCContainerImpl() {
         set(value) {
             if (value == field) return
             field = value
-            onIndexChange.invokeAll(value)
+            listeners.invokeAll(viewControllers[value])
         }
 
-    override val current: ViewController get() = viewControllers[index]
+    override val value: ViewController get() = viewControllers[index]
 
     fun swap(newIndex: Int) {
         index = newIndex
     }
 
-    fun replace(modifyIndex: Int, newController: ViewController) {
-        viewControllers[modifyIndex] = newController
-        if (index == modifyIndex) {
-            swapListener?.invoke(newController,
-                    AnimationSet.fade,
-                    {})
-            onSwap.forEach { it(current) }
-        }
-    }
-
-    var oldIndex: Int = startIndex
-    val onChangeListener: (Int) -> Unit = { it: Int ->
-        swapListener?.invoke(viewControllers[it],
-                if (it > oldIndex) {
-                    AnimationSet.slidePush
-                } else {
-                    AnimationSet.slidePop
-                },
-                {})
-        oldIndex = it
-        onSwap.forEach { it(current) }
-    }
-
-    init {
-        onIndexChange.add(onChangeListener)
-    }
-
-    override fun close() {
-        onIndexChange.remove(onChangeListener)
-        viewControllers.forEach { it.close() }
-    }
-
+    val listeners = ArrayList<(ViewController) -> Unit>()
+    override fun add(element: (ViewController) -> Unit): Boolean = listeners.add(element)
+    override fun remove(element: (ViewController) -> Unit): Boolean = listeners.remove(element)
 }

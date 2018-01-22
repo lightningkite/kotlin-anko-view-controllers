@@ -241,8 +241,6 @@ abstract class CallbackViewController() : ViewController {
      */
     fun <ROOT : ViewGroup> ROOT.embedViewContainer(vcContext: VCContext, container: VCContainer, makeLayoutParams: () -> ViewGroup.LayoutParams) {
         val embedder = VCContainerEmbedder(vcContext, this@embedViewContainer, container, makeLayoutParams)
-        onAnimateInComplete += { a, b -> embedder.animateInComplete(a, b) }
-        onAnimateOutStart += { a, b -> embedder.animateOutStart(a, b) }
         onUnmake += { embedder.unmake() }
     }
 

@@ -43,9 +43,6 @@ class VCDialogActivity : VCActivity() {
         myIndex = intent.getIntExtra(EXTRA_CONTAINER, 0)
         myContainerData = containers[myIndex]
         if (myContainerData != null) {
-            myContainerData!!.container.onEmptyListener = {
-                finish()
-            }
             setFinishOnTouchOutside(intent.getBooleanExtra(EXTRA_DISMISS_ON_TOUCH_OUTSIDE, true))
             super.onCreate(savedInstanceState)
         } else {
@@ -78,12 +75,16 @@ class VCDialogActivity : VCActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!containers.containsKey(myIndex)) {
-            myContainerData?.container?.close()
-        }
     }
 }
 
+@Deprecated(
+        "Use the other dialog function that is not dependent on VCs.",
+        ReplaceWith(
+                "this.dialog(dismissOnTouchOutside = dismissOnTouchOutside, windowModifier = windowModifier, layoutParamModifier = layoutParamModifier, viewMaker = viewMaker)",
+                "com.lightningkite.kotlin.anko.activity.dialog"
+        )
+)
 inline fun Context.dialog(
         dismissOnTouchOutside: Boolean = true,
         noinline windowModifier: Window.() -> Unit = {},
@@ -106,6 +107,13 @@ inline fun Context.dialog(
     }, dismissOnTouchOutside, windowModifier = windowModifier, layoutParamModifier = layoutParamModifier)
 }
 
+@Deprecated(
+        "Use the other dialog function that is not dependent on VCs.",
+        ReplaceWith(
+                "this.dialog(dismissOnTouchOutside = dismissOnTouchOutside, windowModifier = windowModifier, layoutParamModifier = layoutParamModifier, viewMaker = viewMaker)",
+                "com.lightningkite.kotlin.anko.activity.dialog"
+        )
+)
 inline fun Context.dialog(
         dismissOnTouchOutside: Boolean = true,
         noinline windowModifier: Window.() -> Unit = {},
@@ -127,10 +135,12 @@ inline fun Context.dialog(
     }, dismissOnTouchOutside, windowModifier = windowModifier, layoutParamModifier = layoutParamModifier)
 }
 
+@Deprecated("Use dialog functions not dependent on VCs.")
 inline fun Context.viewControllerDialog(vcMaker: (VCStack) -> ViewController, dismissOnTouchOutside: Boolean = true, noinline windowModifier: Window.() -> kotlin.Unit = {}, noinline layoutParamModifier: WindowManager.LayoutParams.() -> Unit = {}) {
     viewControllerDialog(VCStack().apply { push(vcMaker(this)) }, dismissOnTouchOutside, windowModifier = windowModifier, layoutParamModifier = layoutParamModifier)
 }
 
+@Deprecated("Use dialog functions not dependent on VCs.")
 inline fun Context.viewControllerDialog(container: VCStack, dismissOnTouchOutside: Boolean = true, noinline windowModifier: Window.() -> kotlin.Unit = {}, noinline layoutParamModifier: WindowManager.LayoutParams.() -> Unit = {}) {
     val id: Int = container.hashCode()
     VCDialogActivity.containers[id] = VCDialogActivity.ContainerData(container, layoutParamModifier, windowModifier)
@@ -140,6 +150,7 @@ inline fun Context.viewControllerDialog(container: VCStack, dismissOnTouchOutsid
     })
 }
 
+@Deprecated("Use dialog functions not dependent on VCs.")
 inline fun VCContext.viewControllerDialog(container: VCStack, noinline windowModifier: Window.() -> kotlin.Unit = {}, noinline layoutParamModifier: WindowManager.LayoutParams.() -> Unit = {}, crossinline onDismissed: () -> Unit) {
     val id: Int = container.hashCode()
     VCDialogActivity.containers[id] = VCDialogActivity.ContainerData(container, layoutParamModifier, windowModifier)
@@ -151,6 +162,7 @@ inline fun VCContext.viewControllerDialog(container: VCStack, noinline windowMod
     )
 }
 
+@Deprecated("Use dialog functions not dependent on VCs.")
 inline fun VCContext.viewControllerDialog(container: VCStack, noinline windowModifier: Window.() -> kotlin.Unit = {}, noinline layoutParamModifier: WindowManager.LayoutParams.() -> Unit = {}) {
     val id: Int = container.hashCode()
     VCDialogActivity.containers[id] = VCDialogActivity.ContainerData(container, layoutParamModifier, windowModifier)

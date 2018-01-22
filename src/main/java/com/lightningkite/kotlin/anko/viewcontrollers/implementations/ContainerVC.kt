@@ -6,6 +6,7 @@ import android.widget.FrameLayout
 import com.lightningkite.kotlin.anko.viewcontrollers.VCContext
 import com.lightningkite.kotlin.anko.viewcontrollers.ViewController
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
+import com.lightningkite.kotlin.observable.property.StackObservableProperty
 import org.jetbrains.anko._FrameLayout
 import org.jetbrains.anko.matchParent
 import java.util.*
@@ -37,28 +38,22 @@ open class ContainerVC(
         super.unmake(view)
     }
 
-    override fun animateInComplete(vcContext: VCContext, view: View) {
-        embedders[view]?.animateInComplete(vcContext, view)
-        super.animateInComplete(vcContext, view)
-    }
-
-    override fun animateOutStart(vcContext: VCContext, view: View) {
-        embedders[view]?.animateOutStart(vcContext, view)
-        super.animateOutStart(vcContext, view)
-    }
-
-    override fun dispose() {
-        if (disposeContainer) {
-            container.close()
-        }
-        super.dispose()
-    }
-
     override fun onBackPressed(backAction: () -> Unit) {
-        container.onBackPressed(backAction)
+        val top = container.value
+        val default = {
+            if (container is StackObservableProperty<*> && container.stack.size > 1) {
+                container.pop()
+            } else backAction.invoke()
+        }
+        if (top is ViewController)
+            top.onBackPressed(default)
+        else default.invoke()
     }
 
     override fun getTitle(resources: Resources): String {
-        return container.getTitle(resources)
+        val top = container.value
+        return if (top is ViewController)
+            top.getTitle(resources)
+        else ""
     }
 }
