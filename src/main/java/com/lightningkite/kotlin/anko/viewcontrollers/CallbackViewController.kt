@@ -5,16 +5,15 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.lightningkite.kotlin.Disposable
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
 import com.lightningkite.kotlin.anko.viewcontrollers.implementations.ContainerVC
 import com.lightningkite.kotlin.anko.viewcontrollers.implementations.VCContainerEmbedder
-import com.lightningkite.kotlin.invokeAll
+import com.lightningkite.kotlin.lambda.invokeAll
 import com.lightningkite.kotlin.lifecycle.LifecycleConnectable
 import com.lightningkite.kotlin.lifecycle.LifecycleListener
-import com.lightningkite.kotlin.runAll
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.matchParent
+import java.io.Closeable
 import java.util.*
 
 /**
@@ -105,19 +104,19 @@ abstract class CallbackViewController() : ViewController {
     }
 
     override fun animateInComplete(vcContext: VCContext, view: View) {
-        onAnimateInComplete.runAll(vcContext, view)
+        onAnimateInComplete.invokeAll(vcContext, view)
         onAnimateInComplete.clear()
         super.animateInComplete(vcContext, view)
     }
 
     override fun animateOutStart(vcContext: VCContext, view: View) {
-        onAnimateOutStart.runAll(vcContext, view)
+        onAnimateOutStart.invokeAll(vcContext, view)
         onAnimateOutStart.clear()
         super.animateOutStart(vcContext, view)
     }
 
-    fun <T : Disposable> autoDispose(disposable: T): T {
-        onDispose.add { disposable.dispose() }
+    fun <T : Closeable> autoDispose(disposable: T): T {
+        onDispose.add { disposable.close() }
         return disposable
     }
 

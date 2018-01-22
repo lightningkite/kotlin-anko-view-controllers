@@ -48,7 +48,7 @@ open class ContainerVC(
 
     override fun dispose() {
         if (disposeContainer) {
-            container.dispose()
+            container.close()
         }
         super.dispose()
     }

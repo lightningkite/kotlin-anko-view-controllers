@@ -21,8 +21,8 @@ class VCSwapper(startVC: ViewController) : VCContainerImpl() {
         onSwap.forEach { it(current) }
     }
 
-    override fun dispose() {
-        current.dispose()
+    override fun close() {
+        current.close()
     }
 
 }

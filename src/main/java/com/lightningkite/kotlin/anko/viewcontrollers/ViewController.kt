@@ -2,7 +2,7 @@ package com.lightningkite.kotlin.anko.viewcontrollers;
 
 import android.content.res.Resources
 import android.view.View
-import com.lightningkite.kotlin.Disposable
+import java.io.Closeable
 
 /**
  * An object that manages a view.
@@ -10,7 +10,7 @@ import com.lightningkite.kotlin.Disposable
  * It should retain no references to the views except between calls to [make] and [unmake].
  * Created by jivie on 6/26/15.
  */
-interface ViewController : Disposable {
+interface ViewController : Closeable {
     /**
      * An empty/dummy view controller.
      */
@@ -44,8 +44,10 @@ interface ViewController : Disposable {
     /**
      * Dispose anything that needs to be disposed.  After this is called, you should never use this object again.
      */
-    override fun dispose() {
+    fun dispose() {
     }
+
+    override fun close() = dispose()
 
     /**
      * Gets the human-friendly title of this view.  Useful for putting the title on the action bar, if you use one.

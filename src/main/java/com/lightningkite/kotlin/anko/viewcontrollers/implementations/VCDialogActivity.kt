@@ -77,7 +77,7 @@ class VCDialogActivity : VCActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (!containers.containsKey(myIndex)) {
-            myContainerData?.container?.dispose()
+            myContainerData?.container?.close()
         }
     }
 }

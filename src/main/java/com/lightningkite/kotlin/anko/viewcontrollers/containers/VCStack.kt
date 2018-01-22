@@ -156,9 +156,9 @@ open class VCStack() : VCContainerImpl(), VCStackInterface<ViewController> {
     /**
      * Disposes all of the view controllers in the stack.
      */
-    override fun dispose() {
+    override fun close() {
         for (vc in internalStack) {
-            vc.dispose()
+            vc.close()
         }
     }
 }
