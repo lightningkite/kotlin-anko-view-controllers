@@ -128,10 +128,9 @@ abstract class CallbackViewController() : ViewController {
     @Deprecated(
             message = "Use the components to achieve the same thing more cleanly.",
             replaceWith = ReplaceWith(
-                    "this.swapView { bindRenderMap(vcContext, container, CentralRenderMappings) }",
+                    "this.swapView { bind(vcContext, container); init.invoke(this) }",
                     "com.lightningkite.kotlin.anko.swapView",
-                    "com.lightningkite.kotlin.anko.observable.bindRenderMap",
-                    "com.lightningkite.kotlin.anko.observable.CentralRenderMappings"
+                    "com.lightningkite.kotlin.anko.observable.bind"
             )
     )
     fun ViewGroup.viewContainer(vcContext: VCContext, container: VCContainer): View {
@@ -144,10 +143,9 @@ abstract class CallbackViewController() : ViewController {
     @Deprecated(
             message = "Use the components to achieve the same thing more cleanly.",
             replaceWith = ReplaceWith(
-                    "this.swapView { bindRenderMap(vcContext, container, CentralRenderMappings); init.invoke(this) }",
+                    "this.swapView { bind(vcContext, container); init.invoke(this) }",
                     "com.lightningkite.kotlin.anko.swapView",
-                    "com.lightningkite.kotlin.anko.observable.bindRenderMap",
-                    "com.lightningkite.kotlin.anko.observable.CentralRenderMappings"
+                    "com.lightningkite.kotlin.anko.observable.bind"
             )
     )
     inline fun ViewGroup.viewContainer(vcContext: VCContext, container: VCContainer, init: View.() -> Unit): View {
@@ -185,10 +183,9 @@ abstract class CallbackViewController() : ViewController {
     @Deprecated(
             message = "Use the components to achieve the same thing more cleanly.",
             replaceWith = ReplaceWith(
-                    "this.swapView { bindRenderMap(vcContext, container, CentralRenderMappings) }",
+                    "this.swapView { bind(vcContext, container) }",
                     "com.lightningkite.kotlin.anko.swapView",
-                    "com.lightningkite.kotlin.anko.observable.bindRenderMap",
-                    "com.lightningkite.kotlin.anko.observable.CentralRenderMappings"
+                    "com.lightningkite.kotlin.anko.observable.bind"
             )
     )
     fun AnkoContext<*>.viewContainer(vcContext: VCContext, container: VCContainer): View {
@@ -201,10 +198,9 @@ abstract class CallbackViewController() : ViewController {
     @Deprecated(
             message = "Use the components to achieve the same thing more cleanly.",
             replaceWith = ReplaceWith(
-                    "this.swapView { bindRenderMap(vcContext, container, CentralRenderMappings); init.invoke(this) }",
+                    "this.swapView { bind(vcContext, container) }",
                     "com.lightningkite.kotlin.anko.swapView",
-                    "com.lightningkite.kotlin.anko.observable.bindRenderMap",
-                    "com.lightningkite.kotlin.anko.observable.CentralRenderMappings"
+                    "com.lightningkite.kotlin.anko.observable.bind"
             )
     )
     inline fun AnkoContext<*>.viewContainer(vcContext: VCContext, container: VCContainer, init: View.() -> Unit): View {

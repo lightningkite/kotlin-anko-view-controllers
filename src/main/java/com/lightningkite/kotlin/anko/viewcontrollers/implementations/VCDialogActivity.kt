@@ -18,7 +18,6 @@ import java.util.*
  * A specific [VCActivity]
  * Created by jivie on 10/12/15.
  */
-//TODO: How do we replace this?
 @Deprecated("Deprecated along with ViewControllers in general.")
 class VCDialogActivity : VCActivity() {
 

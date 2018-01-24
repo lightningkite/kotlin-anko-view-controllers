@@ -2,8 +2,8 @@ package com.lightningkite.kotlin.anko.viewcontrollers;
 
 import android.content.res.Resources
 import android.view.View
-import com.lightningkite.kotlin.anko.ViewGenerator
 import com.lightningkite.kotlin.anko.activity.ActivityAccess
+import com.lightningkite.kotlin.anko.activity.ViewGenerator
 import com.lightningkite.kotlin.anko.lifecycle
 import com.lightningkite.kotlin.lifecycle.LifecycleListener
 import java.io.Closeable
@@ -15,7 +15,7 @@ import java.io.Closeable
  * Created by jivie on 6/26/15.
  */
 @Deprecated("Use a view generator and associated model instead.")
-interface ViewController : Closeable, ViewGenerator<Unit> {
+interface ViewController : Closeable, ViewGenerator {
     /**
      * An empty/dummy view controller.
      */
@@ -23,7 +23,7 @@ interface ViewController : Closeable, ViewGenerator<Unit> {
         override fun make(vcContext: VCContext): View = View(vcContext.context)
     }
 
-    override fun invoke(access: ActivityAccess, model: Unit): View {
+    override fun invoke(access: ActivityAccess): View {
         val newView = make(access)
 
         //TODO add animation listeners?

@@ -2,8 +2,8 @@ package com.lightningkite.kotlin.anko.viewcontrollers.implementations
 
 import android.view.View
 import android.view.ViewGroup
+import com.lightningkite.kotlin.anko.activity.ViewGenerator
 import com.lightningkite.kotlin.anko.animation.AnimationSet
-import com.lightningkite.kotlin.anko.observable.CentralRenderMappings
 import com.lightningkite.kotlin.anko.viewcontrollers.VCContext
 import com.lightningkite.kotlin.anko.viewcontrollers.containers.VCContainer
 import java.io.Closeable
@@ -23,12 +23,12 @@ class VCContainerEmbedder(val vcContext: VCContext, val root: ViewGroup, val con
 
     var current: Any? = null
     var currentView: View? = null
-    val swap = fun(new: Any) {
+    val swap = fun(new: ViewGenerator) {
         val oldView = currentView
         val old = current
         val animation = defaultAnimation
         current = new
-        val newView = CentralRenderMappings[new]!!.invoke(vcContext)
+        val newView = new.invoke(vcContext)
         root.addView(newView, makeLayoutParams())
         currentView = newView
         if (old != null && oldView != null) {
